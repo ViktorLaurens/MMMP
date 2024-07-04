@@ -51,10 +51,18 @@ This repository is developed as part of a final dissertation to obtain the Maste
 - Example configuration files or settings. -->
 
 ## Project Structure
-- `main.py`: Entry point of the application.
-- `planner/`: Contains the planning algorithms.
-- `utils/`: Utility functions and helpers.
-- `tests/`: Unit tests for the project.
+    MMMP/
+    ├── models/                 # Geometric models for robot classes
+    ├── planners/               # Path and motion planning algorithms
+    ├── res/                    # Resources (images, data)
+    ├── robots/                 # Robot classes
+    ├── sims/                   # Simulation scripts
+    ├── tests/                  # Test scripts
+    ├── utils/                  # Tools and utilities
+    ├── .gitignore
+    ├── LICENSE
+    ├── README.md
+    └── requirements.txt
 
 ## Contributing
 We welcome contributions to improve this project. Follow these steps to contribute:
