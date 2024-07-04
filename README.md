@@ -44,14 +44,14 @@ This repository is developed as part of a final dissertation to obtain the Maste
 2. **Examples**:
     - Describe any example usage or command-line arguments.
 
-## Features
+<!-- ## Features
 - Conflict-Based Search (CBS) for multi-manipulator planning.
 - Probabilistic RoadMaps (PRM) integration.
-- Efficient path planning for multiple robotic arms.
+- Efficient path planning for multiple robotic arms. -->
 
-## Configuration
+<!-- ## Configuration
 - Explain any configuration options available in the project.
-- Example configuration files or settings.
+- Example configuration files or settings. -->
 
 ## Project Structure
 - `main.py`: Entry point of the application.
@@ -64,19 +64,15 @@ We welcome contributions to improve this project. Follow these steps to contribu
 
 1. **Fork the repository**.
    - Go to the repository on GitHub: `https://github.com/ViktorLaurens/MMMP`.
-   - Click the "Fork" button at the top-right corner of the page to create a copy of the repository in your GitHub account.
+   - Click the "Fork" button to copy the repository to your GitHub account.
 
-2. **Clone your fork**.
-   - Open your terminal or command prompt.
-   - In the desired directory, clone your forked repository to your local machine:
-   
+2. **In the desired directory, Clone your fork in the desired directory**:
     ```bash
     git clone https://github.com/ViktorLaurens/MMMP.git
     cd MMMP
     ```
 
 3. **Create a new topic branch**:
-   
     ```bash
     git checkout -b my-topic-branch
     ```
@@ -87,14 +83,12 @@ We welcome contributions to improve this project. Follow these steps to contribu
    - Run tests to make sure your changes don't break existing functionality.
 
 5. **Commit your changes**:
-   
     ```bash
     git add .
     git commit -m "Add detailed description of the feature or fix"
     ```
 
 6. **Push to the branch**:
-   
     ```bash
     git push origin my-topic-branch
     ```
@@ -117,5 +111,5 @@ This project is licensed under the MIT License.
 - Author: Viktor Laurens De Groote
 - Email: viktor.degroote@gmail.com
 
-## Acknowledgements
-<!-- - Acknowledge any contributors, libraries, or resources that were helpful. -->
+<!-- ## Acknowledgements
+- Acknowledge any contributors, libraries, or resources that were helpful. -->
