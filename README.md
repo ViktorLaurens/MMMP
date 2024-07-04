@@ -52,22 +52,22 @@ This repository is developed as part of a final dissertation to obtain the Maste
 
 ## Project Structure
     MMMP/
-    ├── config/                 # Configuration files
-    ├── docs/                   # Documentation
-    ├── examples/               # Example scripts
-    ├── models/                 # Geometric models for robot classes
-    ├── planners/               # Path and motion planning algorithms
-    ├── res/                    # Resources (data, images, videos, ...)
-    ├── robots/                 # Robot classes
-    ├── sims/                   # Simulation scripts
-    ├── tests/                  # Test scripts
-    ├── utils/                  # Tools and utilities
+    ├── config/                 # Configuration files for various parts of your project.
+    ├── docs/                   # Documentation regarding the project. 
+    ├── examples/               # various examples to demonstrate the project's capabilities.
+    ├── models/                 # Geometric models for robot classes. 
+    ├── planners/               # Path and motion planning algorithms. 
+    ├── res/                    # Resources such as data files, images, and videos.
+    ├── robots/                 # Robot Python classes. 
+    ├── sims/                   # Simulation scripts. 
+    ├── tests/                  # Test scripts. 
+    ├── utils/                  # Tools and utilities. 
     ├── .gitignore
     ├── LICENSE
     ├── README.md
     └── requirements.txt
 
-### config/
+<!-- ### config/
 Contains configuration files for various parts of your project. 
 
 ### docs/
@@ -95,7 +95,7 @@ Contains simulation scripts.
 Contains test scripts.
 
 ### utils/
-Contains tools and utilities.
+Contains tools and utilities. -->
 
 ## Contributing
 We welcome contributions to improve this project. Follow these steps to contribute:
