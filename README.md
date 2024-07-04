@@ -24,9 +24,6 @@ This repository is developed as part of a final dissertation to obtain the Maste
 3. **Create and activate a virtual environment (optional)**:
     ```bash
     python -m venv venv
-    # On Windows
-    .\venv\Scripts\Activate
-    # On macOS/Linux
     source venv/bin/activate
     ```
 
