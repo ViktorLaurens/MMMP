@@ -52,8 +52,8 @@ This repository is developed as part of a final dissertation to obtain the Maste
 
 ## Project Structure
     MMMP/
-    ├── config/                 # Configuration files
-    ├── docs/                   # Documentation
+    <!-- ├── config/                 # Configuration files -->
+    <!-- ├── docs/                   # Documentation -->
     ├── examples/               # Example scripts
     ├── models/                 # Geometric models for robot classes
     ├── planners/               # Path and motion planning algorithms
