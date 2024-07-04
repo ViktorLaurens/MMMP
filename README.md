@@ -67,6 +67,10 @@ This repository is developed as part of a final dissertation to obtain the Maste
     ├── README.md
     └── requirements.txt
 
+### config/
+The config/ directory, contains configuration files for various parts of your project, such as different setups for simulations, or planner parameters. 
+
+
 
 
 ## Contributing
