@@ -68,10 +68,34 @@ This repository is developed as part of a final dissertation to obtain the Maste
     └── requirements.txt
 
 ### config/
-The config/ directory, contains configuration files for various parts of your project, such as different setups for simulations, or planner parameters. 
+Contains configuration files for various parts of your project. 
 
+### docs/
+Contains documentation regarding the project. 
 
+### examples/
+Contains various examples to demonstrate the project's capabilities.
 
+### models/
+Contains geometric models for robot classes.
+
+### planners/
+Contains path and motion planning algorithms.
+
+### res/
+Contains resources such as data files, images, and videos.
+
+### robots/
+Contains robot python classes.
+
+### sims/
+Contains simulation scripts.
+
+### tests/
+Contains test scripts.
+
+### utils/
+Contains tools and utilities.
 
 ## Contributing
 We welcome contributions to improve this project. Follow these steps to contribute:
