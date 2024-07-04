@@ -13,7 +13,7 @@ This repository is developed as part of a final dissertation to obtain the Maste
 - [Acknowledgements](#acknowledgements)
 
 ## Installation
-1. **Navigate to the directory on the local device where you would like to clone the repository**
+1. **Navigate to the desired directory on the local device.**
 
 2. **Clone the repository**:
     ```bash
