@@ -4,13 +4,13 @@ This repository is developed as part of a final dissertation to obtain the Maste
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
-- [Features](#features)
-- [Configuration](#configuration)
+<!-- - [Features](#features) -->
+<!-- - [Configuration](#configuration) -->
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact Information](#contact-information)
-- [Acknowledgements](#acknowledgements)
+<!-- - [Acknowledgements](#acknowledgements) -->
 
 ## Installation
 1. **Navigate to the desired directory on the local device.**
@@ -66,7 +66,7 @@ We welcome contributions to improve this project. Follow these steps to contribu
    - Go to the repository on GitHub: `https://github.com/ViktorLaurens/MMMP`.
    - Click the "Fork" button to copy the repository to your GitHub account.
 
-2. **In the desired directory, Clone your fork in the desired directory**:
+2. **In the desired directory, clone your fork in the desired directory**:
     ```bash
     git clone https://github.com/ViktorLaurens/MMMP.git
     cd MMMP
