@@ -185,13 +185,3 @@ def wait_for_duration(duration): #, dt=0):
         update_viewer()
         # time.sleep(duration/10)
 # ---------------------
-        
-# ---------------------
-# Calculating IK
-def calculate_ik(robotId, eeIndex, targetPose): 
-    targetPosition, targetOrientation = targetPose
-    return p.calculateInverseKinematics(robotId, eeIndex, targetPosition, targetOrientation)
-
-def calculate_arm_ik(robotId, eeIndex, targetPose): 
-    return calculate_ik(robotId, eeIndex, targetPose)[:-2]
-# ---------------------
