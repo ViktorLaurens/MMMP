@@ -1,5 +1,5 @@
-# ignore following files
-
-# ignore following directories
+# Ignore virtual environment directory
 venv/
-*/__pycache__/
+
+# Ignore all __pycache__ directories
+**/__pycache__/
