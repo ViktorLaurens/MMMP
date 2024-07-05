@@ -1,7 +1,8 @@
 import pybullet as p
 
 from utils.pb_conf_utils import CLIENT, INFO_FROM_BODY, LockRenderer, ModelInfo, wait_for_duration
-from simulations.utils import get_custom_joint_intervals, get_joint_positions, get_movable_joints, set_joint_positions 
+from utils.pb_joint_utils import get_joint_positions, get_movable_joints, set_joint_positions
+from utils.planner_utils import get_custom_joint_intervals
 
 class Robot:
     def __init__(self, urdf_path, fixed_base=False, base_position=(0, 0, 0), base_orientation=(0, 0, 0, 1), scale=1.0):
