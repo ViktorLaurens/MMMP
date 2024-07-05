@@ -12,8 +12,6 @@ RENDERING_ENABLED = True    # Initialize a global variable to keep track of the 
 ModelInfo = namedtuple('URDFInfo', ['name', 'path', 'fixed_base', 'scale'])  # Namedtuple for URDF model information
 INFO_FROM_BODY = {}  # Dictionary to map body IDs to their corresponding ModelInfo
 
-IK_info = namedtuple('IK_info', ['base_link', 'ee_link', 'free_joints'])
-
 MAX_DISTANCE = 0. # 0. | 1e-3
 # ---------------------
 
