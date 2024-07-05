@@ -1,5 +1,5 @@
 """
-Data processing
+Data handling
 
 This module contains functions for processing or modifying data.
 """
