@@ -7,14 +7,19 @@ import time
 import matplotlib.pyplot as plt
 
 class TestURDFLoading(unittest.TestCase):
+    connection_type = p.DIRECT  # p.DIRECT or p.GUI
 
     @classmethod
     def setUpClass(cls):
-        cls.physics_client = p.connect(p.DIRECT) # p.DIRECT or p.GUI
+        cls.physics_client = p.connect(cls.connection_type) 
 
     @classmethod
     def tearDownClass(cls):
-        p.disconnect(cls.physics_client)
+        if cls.connection_type == p.DIRECT:
+            p.disconnect(cls.physics_client)
+        else:
+            input("Press Enter to disconnect and close the PyBullet GUI...")
+            p.disconnect(cls.physics_client)
 
     def setUp(self):
         p.resetSimulation()
@@ -84,6 +89,21 @@ def plot_execution_times(execution_times):
     print(f'Average execution time: {average_time:.6f} seconds')
 
 def main():
+    connection_type = None
+    while connection_type not in ['DIRECT', 'GUI']:
+        print("\nSelect PyBullet connection type:")
+        print("1 - DIRECT")
+        print("2 - GUI")
+        choice = input("Enter your choice (1 or 2): ")
+        if choice == '1':
+            connection_type = 'DIRECT'
+            TestURDFLoading.connection_type = p.DIRECT
+        elif choice == '2':
+            connection_type = 'GUI'
+            TestURDFLoading.connection_type = p.GUI
+        else:
+            print("Invalid choice. Please enter 1 or 2.")
+
     while True: 
         print("\nSelect an action:")
         print("1 - Test hand")
