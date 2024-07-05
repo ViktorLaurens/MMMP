@@ -1,3 +1,4 @@
+import math
 import os
 import unittest
 import numpy as np
@@ -6,12 +7,18 @@ import pybullet_data
 import time
 import matplotlib.pyplot as plt
 
+# from utils import set_camera_pose
+
 class TestURDFLoading(unittest.TestCase):
     connection_type = p.DIRECT  # p.DIRECT or p.GUI
 
     @classmethod
     def setUpClass(cls):
         cls.physics_client = p.connect(cls.connection_type) 
+        if cls.connection_type == p.GUI:
+            p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0)     # Disable the GUI
+            p.configureDebugVisualizer(p.COV_ENABLE_SHADOWS, 1) # Enable shadows
+            set_camera_pose(camera_point=[0, -1.2, 1.2])        # Set camera pose
 
     @classmethod
     def tearDownClass(cls):
@@ -76,6 +83,22 @@ class TestURDFLoading(unittest.TestCase):
         execution_time = time.time() - start_time
         print(f"URDF loading execution time: {execution_time:.6f} seconds")
         return execution_time
+
+def set_camera_pose(camera_point, target_point=np.zeros(3)):
+    delta_point = np.array(target_point) - np.array(camera_point)
+    distance = np.linalg.norm(delta_point)
+    yaw = get_yaw(delta_point) - np.pi/2
+    pitch = get_pitch(delta_point)
+    p.resetDebugVisualizerCamera(distance, math.degrees(yaw), math.degrees(pitch),
+                                 target_point, 0)
+    
+def get_pitch(point):
+    dx, dy, dz = point
+    return np.math.atan2(dz, np.sqrt(dx ** 2 + dy ** 2))
+
+def get_yaw(point):
+    dx, dy = point[:2]
+    return np.math.atan2(dy, dx)
 
 def plot_execution_times(execution_times):
     average_time = np.mean(execution_times)
