@@ -9,7 +9,7 @@ class TestURDFLoading(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.physics_client = p.connect(p.DIRECT)
+        cls.physics_client = p.connect(p.DIRECT) # p.DIRECT or p.GUI
 
     @classmethod
     def tearDownClass(cls):
@@ -19,16 +19,16 @@ class TestURDFLoading(unittest.TestCase):
         p.resetSimulation()
 
     def test_load_urdf(self):
-        urdf_dir = os.path.join(pybullet_data.getDataPath(), 'urdf')
+        urdf_dir = os.path.join(os.path.dirname(__file__), "../../models/franka_panda/urdf")
         self.assertTrue(os.path.exists(urdf_dir), "URDF directory does not exist")
-        urdf_file = os.path.join(urdf_dir, 'r2d2.urdf')
+        urdf_file = os.path.join(urdf_dir, 'panda_arm_hand.urdf')
         self.assertTrue(os.path.isfile(urdf_file), "URDF file does not exist")
         robot_id = p.loadURDF(urdf_file)
         self.assertGreaterEqual(robot_id, 0, "Failed to load URDF file")
 
     def test_load_urdf_execution_time(self):
-        urdf_dir = os.path.join(pybullet_data.getDataPath(), 'urdf')
-        urdf_file = os.path.join(urdf_dir, 'r2d2.urdf')
+        urdf_dir = os.path.join(os.path.dirname(__file__), "../../models/franka_panda/urdf")
+        urdf_file = os.path.join(urdf_dir, 'panda_arm_hand.urdf')
         start_time = time.time()
         p.loadURDF(urdf_file)
         execution_time = time.time() - start_time
@@ -64,7 +64,8 @@ def main():
             runner.run(suite)
         elif choice == '3':
             execution_times = []
-            for _ in range(10):  # Run the execution time test 10 times
+            count = int(input('Enter the number of times to run the test:'))
+            for _ in range(count):  # Run the execution time test 'count' times
                 test_instance = TestURDFLoading()
                 test_instance.setUpClass()
                 execution_times.append(test_instance.test_load_urdf_execution_time())
