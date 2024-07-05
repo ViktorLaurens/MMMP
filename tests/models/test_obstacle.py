@@ -7,7 +7,7 @@ import pybullet_data
 import time
 import matplotlib.pyplot as plt
 
-from utils.pybullet_utils import set_camera_pose
+from utils.pb_conf_utils import set_camera_pose
 
 class TestURDFLoading(unittest.TestCase):
     model = 'obstacle'  # Model name
