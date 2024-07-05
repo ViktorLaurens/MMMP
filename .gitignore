@@ -2,4 +2,4 @@
 
 # ignore following directories
 venv/
-__pycache__/
+*/__pycache__/
