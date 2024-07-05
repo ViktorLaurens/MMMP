@@ -91,6 +91,7 @@ def main():
         print("9 - simple_cylinder")
         print("10 - yellow_post")
         print("11 - cup_small")
+        print("12 - table")
         print("0 - Exit")
         choice = input("Enter your choice: ")
 
@@ -167,6 +168,13 @@ def main():
         elif choice == '11':
             suite = unittest.TestSuite()
             TestURDFLoading.model = 'cup_small'
+            suite.addTest(TestURDFLoading('test_load_urdf'))
+            runner = unittest.TextTestRunner()
+            runner.run(suite)
+
+        elif choice == '12':
+            suite = unittest.TestSuite()
+            TestURDFLoading.model = 'table'
             suite.addTest(TestURDFLoading('test_load_urdf'))
             runner = unittest.TextTestRunner()
             runner.run(suite)
