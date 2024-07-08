@@ -33,7 +33,7 @@ class Robot:
         set_joint_positions(self.robot_id, joints, pose)
 
     def get_pose(self): 
-        get_joint_positions(self.robot_id, self.joints)
+        return get_joint_positions(self.robot_id, self.joints)
     
     def execute_motion(self, path):
         """
