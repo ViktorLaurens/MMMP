@@ -22,11 +22,9 @@ class TestURDFLoading(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        if cls.connection_type == p.DIRECT:
-            p.disconnect(cls.physics_client)
-        else:
-            input("Press Enter to disconnect and close the PyBullet GUI...")
-            p.disconnect(cls.physics_client)
+        if cls.connection_type == p.GUI:
+            input("Press Enter to close the simulation...")
+        p.disconnect(cls.physics_client)
 
     def setUp(self):
         p.resetSimulation()
