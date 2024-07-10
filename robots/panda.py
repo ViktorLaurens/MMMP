@@ -67,7 +67,7 @@ class Panda(Robot):
         """
         for q in arm_path:
             self.set_arm_pose(q)
-            wait_for_duration(0.15)
+            wait_for_duration(0.05)
 
     def execute_gripper_motion(self, gripper_path):
         """
@@ -75,4 +75,4 @@ class Panda(Robot):
         """
         for q in gripper_path:
             self.set_gripper_pose(q)
-            wait_for_duration(0.15)
+            wait_for_duration(0.05)
