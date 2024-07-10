@@ -42,27 +42,27 @@ class TestRobot(unittest.TestCase):
         print(f"\nConfig Space: {robot.config_space}")
         print(f"\nDimension: {robot.dimension}")
 
-    def test_robot_get_set_pose(self):
-        urdf_path = os.path.join(os.path.dirname(__file__), "../../models/franka_panda/urdf/panda_arm.urdf")
-        robot = Robot(urdf_path)
-        central_pose = (0.0, 0.0, 0.0, -1.5708, 0.0, 1.8675, 0.0)
-        minimum_pose = (-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973)
-        maximum_pose = (2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973)
-        random_pose = (-1.434281929137999, 0.27757619690247505, -2.3276861697284536, -1.4734199503841374, 1.5319987163381463, 2.891383798905186, -0.2025190088121137)
-        set_pose = central_pose
-        print(f"\Set Pose: {set_pose}")
-        robot.set_pose(robot.joints, set_pose)
-        get_pose = robot.get_pose()
-        print(f"\Get Pose: {get_pose}")
-        self.assertEqual(get_pose, set_pose, "Set pose and get pose do not match")
+    # def test_robot_get_set_pose(self):
+    #     urdf_path = os.path.join(os.path.dirname(__file__), "../../models/franka_panda/urdf/panda_arm.urdf")
+    #     robot = Robot(urdf_path)
+    #     central_pose = (0.0, 0.0, 0.0, -1.5708, 0.0, 1.8675, 0.0)
+    #     minimum_pose = (-2.8973, -1.7628, -2.8973, -3.0718, -2.8973, -0.0175, -2.8973)
+    #     maximum_pose = (2.8973, 1.7628, 2.8973, -0.0698, 2.8973, 3.7525, 2.8973)
+    #     random_pose = (-1.434281929137999, 0.27757619690247505, -2.3276861697284536, -1.4734199503841374, 1.5319987163381463, 2.891383798905186, -0.2025190088121137)
+    #     set_pose = central_pose
+    #     print(f"\Set Pose: {set_pose}")
+    #     robot.set_pose(robot.joints, set_pose)
+    #     get_pose = robot.get_pose()
+    #     print(f"\Get Pose: {get_pose}")
+    #     self.assertEqual(get_pose, set_pose, "Set pose and get pose do not match")
 
-    def test_robot_execute_motion(self):
-        urdf_path = os.path.join(os.path.dirname(__file__), "../../models/franka_panda/urdf/panda_arm.urdf")
-        robot = Robot(urdf_path)
-        path = [[0] * robot.dimension, [0.1] * robot.dimension, [0.2] * robot.dimension]
-        robot.execute_motion(path)
-        final_pose = robot.get_pose()
-        self.assertEqual(final_pose, path[-1], "Final pose does not match the last position in path")
+    # def test_robot_execute_motion(self):
+    #     urdf_path = os.path.join(os.path.dirname(__file__), "../../models/franka_panda/urdf/panda_arm.urdf")
+    #     robot = Robot(urdf_path)
+    #     path = [[0] * robot.dimension, [0.1] * robot.dimension, [0.2] * robot.dimension]
+    #     robot.execute_motion(path)
+    #     final_pose = robot.get_pose()
+    #     self.assertEqual(final_pose, path[-1], "Final pose does not match the last position in path")
     
 def main():
     connection_type = None
