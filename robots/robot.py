@@ -13,7 +13,7 @@ class Robot:
         self.scale = scale
         self.robot_id = self.load()
         self.joints = get_movable_joints(self.robot_id)
-        self.config_space = self.get_config_space()
+        self.config_space = self.get_config_space(self.joints)
         self.dimension = len(self.joints)
 
     def load(self):
@@ -26,8 +26,8 @@ class Robot:
         INFO_FROM_BODY[robot_id] = ModelInfo(None, self.urdf_path, self.fixed_base, self.scale)
         return robot_id
     
-    def get_config_space(self):
-        return get_custom_joint_intervals(self.robot_id, self.joints)
+    def get_config_space(self, joints):
+        return get_custom_joint_intervals(self.robot_id, joints)
    
     def set_pose(self, joints, pose):
         set_joint_positions(self.robot_id, joints, pose)
