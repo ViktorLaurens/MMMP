@@ -9,7 +9,7 @@ class Panda(Robot):
     FRANKA_URDF = os.path.join(os.path.dirname(__file__), "../models/franka_panda/urdf/panda_arm_hand.urdf")
     PANDA_INFO = IK_info(base_link='panda_link0', ee_link='panda_link8', free_joints=['panda_joint7'])
     
-    def __init__(self, fixed_base=False, base_position=(0, 0, 0), base_orientation=(0, 0, 0, 1), scale=1.0):
+    def __init__(self, fixed_base=True, base_position=(0, 0, 0), base_orientation=(0, 0, 0, 1), scale=1.0):
         super().__init__(Panda.FRANKA_URDF, fixed_base, base_position, base_orientation, scale)
         self.tool_link = link_from_name(self.robot_id, 'panda_hand')
         self.joints = get_movable_joints(self.robot_id)
@@ -22,12 +22,21 @@ class Panda(Robot):
         self.arm_dimension = len(self.arm_joints)
         self.gripper_dimension = len(self.gripper_joints)
 
+        # Clear the terminal
+        os.system('cls' if os.name == 'nt' else 'clear')
+
     # GETTERS
     def get_arm_joints(self):
         return get_movable_joints(self.robot_id)[:-2]
 
     def get_gripper_joints(self):
         return get_movable_joints(self.robot_id)[-2:]
+    
+    def get_arm_pose(self):
+        return super().get_pose(self.arm_joints)
+    
+    def get_gripper_pose(self):
+        return super().get_pose(self.gripper_joints)
     
     # SETTERS
     def set_arm_pose(self, pose):
