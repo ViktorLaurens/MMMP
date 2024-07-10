@@ -132,7 +132,7 @@ class TestRobot(unittest.TestCase):
         panda = Panda(fixed_base=True, base_position=(0, 0, 0), base_orientation=(0, 0, 0, 1))
         initial_pose = (0.0, 0.0, -2.0, -1.5708, 0.0, 1.5708, 0.0)
         goal_pose = (0.0, 0.0, 2.0, -1.5708, 0.0, 1.5708, 0.0)
-        nr_frames = 60
+        nr_frames = 120
         path = calculate_straight_path(initial_pose, goal_pose, nr_frames)
         panda.execute_arm_motion(path)
         final_pose = panda.get_pose()
