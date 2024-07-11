@@ -86,7 +86,7 @@ class DistancePRM(PRM):
 class KDTreeDistancePRM(PRM):
     """
     Implementation of Distance PRM Planner for Planar Robots
-    as above but a KDTree is used for efficient nearest neighbor queries.
+    in which a KDTree is used for efficient nearest neighbor queries.
     (this requires all the nodes to be sampled first to build the KDTree!)
     """
     def __init__(self, environment, max_edge_len):
