@@ -2,9 +2,12 @@
 
 PRM Planner for Planar Robots
 
-Note: This PRM class cannot be used as a standalone planner BUT
-is a blueprint for more specific PRM classes that inherit from it. 
+Notes: 
 
+ - This PRM class cannot be used as a standalone planner BUT
+is a blueprint for more specific PRM classes that inherit from it.
+
+ - This PRM class expects only 1 agent/robot in the environment.
 """
 
 from collections import deque
@@ -107,7 +110,6 @@ class PRM:
             return False
         # collisions with obstacles
         for obstacle in self.obstacles:
-            # sample1 = sample[i*robot1.n_links:(i+1)*robot1.n_links]
             if self.robot_obstacle_collision(sample, robot, obstacle):
                 return False
         return True
