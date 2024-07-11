@@ -10,7 +10,7 @@ import time
 import numpy as np
 from scipy.spatial import KDTree
 
-from planners.prm.utils import Node
+from planners.prm.pybullet.utils import Node
 
 class Conflict:
     def __init__(self):

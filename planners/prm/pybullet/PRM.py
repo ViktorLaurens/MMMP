@@ -5,7 +5,7 @@ import numpy as np
 import pybullet as p
 from scipy.spatial import KDTree
 
-from planners.prm.utils import Node
+from planners.prm.pybullet.utils import Node
 
 class ProbabilisticRoadMap:
     def __init__(self, environment, r_id, c_space, maxdist, k1=20, k2=10, build_type='kdtree', n=100, t=10, time_step=0.1, local_step=0.05) -> None:

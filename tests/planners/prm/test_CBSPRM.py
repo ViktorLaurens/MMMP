@@ -3,8 +3,8 @@ import imageio
 import numpy as np
 import pybullet as p
 
-from planners.prm.env import Environment
-from planners.prm.CBSPRM import CBSPRM
+from planners.prm.pybullet.env import Environment
+from planners.prm.pybullet.CBSPRM import CBSPRM
 from robots.panda import Panda
 from utils.ik_utils import calculate_arm_ik
 from utils.pb_conf_utils import add_data_path, connect, disconnect, pause_sim, set_camera_pose
