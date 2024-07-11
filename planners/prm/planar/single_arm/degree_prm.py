@@ -7,7 +7,6 @@ Notes:
  - SINGLE ROBOT USE: This PRM class expects only 1 agent/robot in the environment.
 
 """
-
 import time
 from planners.prm.planar.env import LOCAL_STEP
 from planners.prm.planar.single_arm.prm import PRM
