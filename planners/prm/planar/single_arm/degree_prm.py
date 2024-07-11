@@ -10,7 +10,7 @@ Notes:
 
 import time
 from planners.prm.planar.env import LOCAL_STEP
-from planners.prm.planar.prm import PRM
+from planners.prm.planar.single_arm.prm import PRM
 from planners.prm.planar.utils import Node
 from scipy.spatial import KDTree
 
