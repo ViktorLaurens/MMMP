@@ -4,11 +4,12 @@ PRM Planner for Planar Robots
 
 Notes: 
 
- - This PRM class cannot be used as a standalone planner BUT
+ - BLUEPRINT: This PRM class cannot be used as a standalone planner BUT
 is a blueprint for more specific PRM classes that inherit from it.
 
- - This PRM class expects only 1 agent/robot in the environment.
-"""
+ - SINGLE ROBOT USE: This PRM class expects only 1 agent/robot in the environment.
+
+ """
 
 from collections import deque
 import time
@@ -197,11 +198,11 @@ class PRM:
         start_node = self.find_nearest_roadmap_node(start_config)
         goal_node = self.find_nearest_roadmap_node(goal_config)
 
-        # Use Dijkstra to find a path between the nearest start and goal nodes
-        dijkstra_start_time = time.perf_counter()
-        d_path, d_distance = self.dijkstra_search(start_node.id, goal_node.id)
-        dijkstra_duration = time.perf_counter() - dijkstra_start_time
-        print(f"Dijkstra: Composite path in {dijkstra_duration:.6f} seconds with distance {d_distance:.2f}")
+        # # Use Dijkstra to find a path between the nearest start and goal nodes
+        # dijkstra_start_time = time.perf_counter()
+        # d_path, d_distance = self.dijkstra_search(start_node.id, goal_node.id)
+        # dijkstra_duration = time.perf_counter() - dijkstra_start_time
+        # print(f"Dijkstra: Composite path in {dijkstra_duration:.6f} seconds with distance {d_distance:.2f}")
         
         # Use A* to find a path between the nearest start and goal nodes
         a_star_start_time = time.perf_counter()
