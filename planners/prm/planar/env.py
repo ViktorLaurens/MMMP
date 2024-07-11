@@ -1,3 +1,8 @@
+"""
+
+Planar environment for multi-robot motion planning. 
+
+"""
 from collections import deque
 from copy import deepcopy
 import datetime

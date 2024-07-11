@@ -1,3 +1,10 @@
+"""
+
+This is a simple planar arm class to be used together with 
+planners from 'planar' directories. 
+
+"""
+
 import numpy as np
 
 from utils.planner_utils import Interval
