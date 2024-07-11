@@ -13,9 +13,6 @@ from scipy.spatial import KDTree
 # TYPE = 'nn' # 'distance' or 'nn'
 LOCAL_STEP = 0.05  # [rad] Step size for local planner
 
-# constants
-# INF = float("inf")
-
 class Environment:
     def __init__(self, map_dimensions, agents, obstacles):
         self.map_dimensions = map_dimensions

@@ -1,3 +1,7 @@
+# constants
+INF = float("inf")
+
+# classes
 class Node:
     def __init__(self, id, q):
         self.id = id
@@ -8,3 +12,4 @@ class Node:
         return hash(str(self.id) + str(self.q))
     def __str__(self):
         return str(self.id, self.q)    
+    
