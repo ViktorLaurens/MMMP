@@ -1,3 +1,12 @@
+"""
+
+PRM Planner for Planar Robots
+
+Note: This PRM class cannot be used as a standalone planner BUT
+is a blueprint for more specific PRM classes that inherit from it. 
+
+"""
+
 from collections import deque
 import time
 from matplotlib import pyplot as plt
