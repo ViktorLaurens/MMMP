@@ -57,10 +57,12 @@ class Tree:
     
     def trace_path(self, leaf_id: int) -> List[int]:
         path = [leaf_id]
+        child_id = leaf_id
         while child_id in self.edges:
-            parent_id = self.get_parent_id(child_id)    
+            parent_id = self.get_parent_id(child_id)
+            path.append(parent_id)    
             child_id = parent_id
-        return path
+        return path[::-1]
     
     # def get_edge(self, node1: Node, node2: Node) -> Edge:
     #     return self.edges[(node1.id, node2.id)]
