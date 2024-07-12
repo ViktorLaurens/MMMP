@@ -52,20 +52,32 @@ class Tree:
     def get_node(self, id: int) -> Node:
         return self.nodes[id]
     
-    def get_edge(self, node1: Node, node2: Node) -> Edge:
-        return self.edges[(node1.id, node2.id)]
+    def get_parent_id(self, child_id: int) -> int:
+        return self.edges[child_id]
     
-    def get_edges(self) -> List[Edge]:
-        return list(self.edges.values())
+    def trace_path(self, leaf_id: int) -> List[int]:
+        path = [leaf_id]
+        while child_id in self.edges:
+            parent_id = self.get_parent_id(child_id)    
+            child_id = parent_id
+        return path
     
-    def get_nodes(self) -> List[Node]:
-        return list(self.nodes.values())
+    # def get_edge(self, node1: Node, node2: Node) -> Edge:
+    #     return self.edges[(node1.id, node2.id)]
     
-    def get_neighbours(self, node: Node) -> List[Node]:
-        neighbours = []
-        for edge in self.get_edges():
-            if edge.node1 == node:
-                neighbours.append(edge.node2)
-            elif edge.node2 == node:
-                neighbours.append(edge.node1)
-        return neighbours
+    # def get_edges(self) -> List[Edge]:
+    #     return list(self.edges.values())
+    
+    # def get_nodes(self) -> List[Node]:
+    #     return list(self.nodes.values())
+    
+    # def get_neighbours(self, node: Node) -> List[Node]:
+    #     neighbours = []
+    #     for edge in self.get_edges():
+    #         if edge.node1 == node:
+    #             neighbours.append(edge.node2)
+    #         elif edge.node2 == node:
+    #             neighbours.append(edge.node1)
+    #     return neighbours
+
+    
