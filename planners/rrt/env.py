@@ -70,7 +70,7 @@ class Environment:
             for r_id, path in paths.items():
                 closest_key = min(path.keys(), key=lambda x: abs(x - t))
                 self.robot_models[r_id].set_arm_pose(path[closest_key])
-            wait_for_duration(time_step)
+            # wait_for_duration(time_step)
 
     def execute_joint_motion_capturing_frames(self, paths):
         # Get the maximum time index across all paths

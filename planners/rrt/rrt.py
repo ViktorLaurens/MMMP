@@ -1,7 +1,10 @@
 import random
+import time
 from typing import Any, Dict, List, Optional
 
 import numpy as np
+
+from planners.rrt.utils import CollisionError
 
 class Node:
     def __init__(self, id, q) -> None:
@@ -106,6 +109,11 @@ class RRT:
         self.robot_models = environment.robot_models    
         self.obstacles = environment.obstacles
 
+    def reset_robot_poses(self):
+        for i, robot in enumerate(self.robot_models):
+            robot.set_arm_pose(self.agents[i]["start"])
+        return
+
     def create_c_spaces(self, robot_models):
         c_spaces = []
         for model in robot_models:
@@ -175,21 +183,98 @@ class RRT:
                 return False
         return True
     
+    def composite_collision_free_start(self):
+        errors = []
+        for i, robot in enumerate(self.robot_models):
+            robot.set_arm_pose(self.agents[i]["start"])
+        for i, robot in enumerate(self.robot_models):
+            if self.env.robot_collision(robot):
+                errors.append(f"Agent {self.agents[i]['name']} start configuration is in collision.")
+        if errors:
+            raise CollisionError('\n'.join(errors))
+        return True
+    
+    def composite_collision_free_goal(self):
+        errors = []
+        for i, robot in enumerate(self.robot_models):
+            robot.set_arm_pose(self.agents[i]["goal"])
+        for i, robot in enumerate(self.robot_models):
+            if self.env.robot_collision(robot):
+                errors.append(f"Agent {self.agents[i]['name']} goal configuration is in collision.")
+        if errors:
+            raise CollisionError('\n'.join(errors))
+        return True
+    
     # Query
+    def goal_reached(self, qs):
+        for i, q in enumerate(qs):
+            if self.distance(q, self.agents[i]["goal"]) > self.maxdist:
+                return False
+        return True
+
     def query(self): 
         if self.build_type == 'n':
-            return self.query_n()
+            trees = self.query_n()
+            paths = self.paths_from_trees()
+            return paths
         elif self.build_type == 't':
-            return self.query_t()
+            trees = self.query_t()
+            paths = self.paths_from_trees()
+            return paths
         else:
             raise ValueError("Invalid build type. Enter 'n' for number of iterations or 't' for time limit.")
     
     def query_n(self):
-        pass
+        # Check for collisions at the start and goal configurations
+        try:
+            self.composite_collision_free_start()
+            self.composite_collision_free_goal()
+            # self.reset_robot_poses()
+        except CollisionError as e:
+            print(e)  # Print the exception message
+            return None  # Exit the planning function if a collision is detected
+        
+        for i in range(self.n):
+            qs = self.sample_valid_random_qs(self.c_spaces)
+            q_nearests = self.composite_nearest(qs)
+            q_news = self.composite_extend(q_nearests, qs)
+            if self.composite_collision_free(q_news):
+                for i, q_new in enumerate(q_news):
+                    self.trees[i].add_node(Node(len(self.trees[i].nodes), q_new))
+                    self.trees[i].add_edge(self.trees[i].get_node(q_nearests[i]), self.trees[i].get_node(len(self.trees[i].nodes)-1))
+                    if self.goal_reached(q_news):
+                        return self.trees
+        raise ValueError("RRT could not find a path.")
 
     def query_t(self):
-        pass
+        # Check for collisions at the start and goal configurations
+        try:
+            self.composite_collision_free_start()
+            self.composite_collision_free_goal()
+            # self.reset_robot_poses()
+        except CollisionError as e:
+            print(e)  # Print the exception message
+            return None
+        
+        start_time = time.time()
+        while time.time() - start_time < self.t:
+            qs = self.sample_valid_random_qs(self.c_spaces)
+            q_nearests = self.composite_nearest(qs)
+            q_news = self.composite_extend(q_nearests, qs)
+            if self.composite_collision_free(q_news):
+                for i, q_new in enumerate(q_news):
+                    self.trees[i].add_node(Node(len(self.trees[i].nodes), q_new))
+                    self.trees[i].add_edge(self.trees[i].get_node(q_nearests[i]), self.trees[i].get_node(len(self.trees[i].nodes)-1))
+                    if self.goal_reached(q_news):
+                        return self.trees
+        raise ValueError("RRT could not find a path.")
     
+    def paths_from_trees(self):
+        paths = []
+        for i in range(len(self.robot_models)):
+            paths.append(self.trees[i].trace_path(len(self.trees[i].nodes)-1))
+        return paths
+
 
 
 
