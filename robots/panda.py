@@ -11,8 +11,8 @@ class Panda(Robot):
     
     def __init__(self, fixed_base=True, base_position=(0, 0, 0), base_orientation=(0, 0, 0, 1), scale=1.0):
         super().__init__(Panda.FRANKA_URDF, fixed_base, base_position, base_orientation, scale)
-        self.tool_link = link_from_name(self.robot_id, 'panda_hand')
-        self.joints = get_movable_joints(self.robot_id)
+        self.tool_link = link_from_name(self.r_id, 'panda_hand')
+        self.joints = get_movable_joints(self.r_id)
         self.arm_joints = self.get_arm_joints()
         self.gripper_joints = self.get_gripper_joints()
         self.c_space = self.get_config_space(self.joints)
@@ -27,10 +27,10 @@ class Panda(Robot):
 
     # GETTERS
     def get_arm_joints(self):
-        return get_movable_joints(self.robot_id)[:-2]
+        return get_movable_joints(self.r_id)[:-2]
 
     def get_gripper_joints(self):
-        return get_movable_joints(self.robot_id)[-2:]
+        return get_movable_joints(self.r_id)[-2:]
     
     def get_arm_pose(self):
         return super().get_pose(self.arm_joints)

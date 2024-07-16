@@ -11,29 +11,29 @@ class Robot:
         self.base_position = base_position
         self.base_orientation = base_orientation
         self.scale = scale
-        self.robot_id = self.load()
-        self.joints = get_movable_joints(self.robot_id)
+        self.r_id = self.load()
+        self.joints = get_movable_joints(self.r_id)
         self.config_space = self.get_config_space(self.joints)
         self.dimension = len(self.joints)
 
     def load(self):
         with LockRenderer():
             if self.urdf_path.endswith('.urdf'):
-                robot_id = p.loadURDF(self.urdf_path, basePosition=self.base_position, baseOrientation=self.base_orientation,
+                r_id = p.loadURDF(self.urdf_path, basePosition=self.base_position, baseOrientation=self.base_orientation,
                              useFixedBase=self.fixed_base, globalScaling=self.scale, physicsClientId=CLIENT)
             else: 
                 raise ValueError(self.urdf_path)
-        INFO_FROM_BODY[robot_id] = ModelInfo(None, self.urdf_path, self.fixed_base, self.scale)
-        return robot_id
+        INFO_FROM_BODY[r_id] = ModelInfo(None, self.urdf_path, self.fixed_base, self.scale)
+        return r_id
     
     def get_config_space(self, joints):
-        return get_custom_joint_intervals(self.robot_id, joints)
+        return get_custom_joint_intervals(self.r_id, joints)
    
     def set_pose(self, joints, pose):
-        set_joint_positions(self.robot_id, joints, pose)
+        set_joint_positions(self.r_id, joints, pose)
 
     def get_pose(self, joints): 
-        return get_joint_positions(self.robot_id, joints)
+        return get_joint_positions(self.r_id, joints)
     
     def execute_motion(self, path):
         """
