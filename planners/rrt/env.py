@@ -49,14 +49,14 @@ class Environment:
         """
         # if obstacle == self.ground:
         #     return False  # Ignore collision with ground
-        closest_points = p.getClosestPoints(bodyA=robot.robot_id, bodyB=obstacle, distance=collision_threshold)
+        closest_points = p.getClosestPoints(bodyA=robot.r_id, bodyB=obstacle, distance=collision_threshold)
         if closest_points:
             return True
         return False
     
     def robot_robot_collision(self, robot1, robot2, collision_threshold=0.01):
         # Check for collision between the two robots
-        closest_points = p.getClosestPoints(bodyA=robot1.robot_id, bodyB=robot2.robot_id, distance=collision_threshold)
+        closest_points = p.getClosestPoints(bodyA=robot1.r_id, bodyB=robot2.r_id, distance=collision_threshold)
         if closest_points:
             return True
         return False
@@ -76,7 +76,7 @@ class Environment:
         # Get the maximum time index across all paths
         times = {r_id: max(path.keys()) for r_id, path in paths.items()}
         max_t = max(times.values())
-        time_step = np.round(sorted(paths[0].keys())[1] - sorted(paths[0].keys())[0], 1)
+        time_step = np.round(sorted(paths[0].keys())[1] - sorted(paths[0].keys())[0], 2)
         
         frames = []  # List to hold images for the video
 
