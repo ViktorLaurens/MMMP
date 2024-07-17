@@ -120,7 +120,7 @@ def main():
 
     pause_sim('Learn?')
     start_time = time.time()
-    prm = PrioritizedPRM(env, k1=10, k2=5, build_type='kdtree', n=100, t=10, time_step=0.01)
+    prm = PrioritizedPRM(env, k1=10, k2=5, build_type='kdtree', n=1000, t=10, time_step=0.01, maxdist=10, local_step=0.05)
     learn_duration = time.time()-start_time
     print(f"Learning duration: {learn_duration}")
     # print(f"Edges: {prm.edge_dicts}")
