@@ -97,9 +97,15 @@ class RRT:
         self.n = n
         self.t = t
 
+        # unpack environmental data
+        self.env = environment
+        self.agents = environment.agents                
+        self.robot_models = environment.robot_models    
+        self.obstacles = environment.obstacles
+
         self.maxdists = maxdists
         if maxdists is None: 
-            self.maxdists = self.calc_maxdists(self.r_ids, self.c_spaces.values(), res=20)
+            self.maxdists = self.calc_maxdists(self.r_ids, self.c_spaces.values(), res=100)
 
         self.local_step_sizes = local_step_sizes
         if local_step_sizes is None:
@@ -110,11 +116,6 @@ class RRT:
         # Create trees for each robot
         self.trees = {r_id: Tree(Node(0, environment.robot_models[r_id].get_arm_pose())) for r_id in self.r_ids}
 
-        # unpack environmental data
-        self.env = environment
-        self.agents = environment.agents                
-        self.robot_models = environment.robot_models    
-        self.obstacles = environment.obstacles
 
     # def create_c_spaces(self, robot_models):
     #     c_spaces = []
@@ -135,7 +136,7 @@ class RRT:
             unit_vector = np.array([])
             for interval in c_space: 
                 unit_vector = np.append(unit_vector, (interval.upper - interval.lower) / res + interval.lower)
-            maxdists.update({r_id: self.distance(unit_vector, [interval.lower for interval in c_space])})
+            maxdists.update({r_id: self.distance(r_id, unit_vector, [interval.lower for interval in c_space])})
         return maxdists
 
     def reset_robot_poses(self):
@@ -168,14 +169,16 @@ class RRT:
         return [self.sample_valid_random_q(robot.r_id, c_space) for robot, c_space in zip(robots, c_spaces)]
     
     # Distance
-    def distance(self, q1, q2):
-        return self.general_distance(q1, q2)
+    def distance(self, r_id, q1, q2):
+        return self.specific_distance(r_id, q1, q2)
     
     def general_distance(self, q1, q2):
         return np.linalg.norm(np.array(q1) - np.array(q2))
 
-    def specific_distance(self, q1, q2):
-        return np.linalg.norm(np.array(q1) - np.array(q2))
+    def specific_distance(self, r_id, q1, q2):
+        index = self.r_ids.index(r_id)
+        model = self.robot_models[index]
+        return model.panda_specific_distance_metric(q1, q2)
     
     def composite_distance(self, qs_1, qs_2):
         d = 0
@@ -184,8 +187,9 @@ class RRT:
         return d
     
     # Nearest
-    def nearest_node_id(self, q, tree):
-        nearest_node_id = min(tree.nodes.keys(), key=lambda x: self.distance(q, tree.nodes[x].q))
+    def nearest_node_id(self, r_id, q):
+        tree = self.trees[r_id]
+        nearest_node_id = min(tree.nodes.keys(), key=lambda x: self.distance(r_id, q, tree.nodes[x].q))
         # nearest_q = np.array(tree.nodes[nearest_node_id].q)
         # while not collision_free_segment(q, tree.nodes[nearest_node_id].q):
         #     nearest_node_id = min(tree.nodes.keys(), key=lambda x: self.distance(q, tree.nodes[x].q))
@@ -207,21 +211,21 @@ class RRT:
 
     def composite_nearest_node_ids(self, qs):
         composite_nearest = []
-        for i, tree in enumerate(self.trees.values()):
-            composite_nearest.append(self.nearest_node_id(qs[i], tree))
+        for i, r_id in enumerate(self.r_ids):
+            composite_nearest.append(self.nearest_node_id(r_id, qs[i]))
         return composite_nearest
      
     # Extending
-    def extend(self, q_nearest, q, maxdist):
+    def extend(self, r_id, q_nearest, q, maxdist):
         direction = np.array(q) - np.array(q_nearest)
-        norm = self.distance(q_nearest, q)
+        norm = self.distance(r_id, q_nearest, q)
         q_new = np.array(q_nearest) + maxdist * direction / norm 
         return q_new
     
     def composite_extend(self, q_nearests, qs, maxdists):
         composite_extend = []
-        for i, q_nearest in enumerate(q_nearests):
-            composite_extend.append(self.extend(q_nearest, qs[i], maxdists[self.r_ids[i]]))
+        for i, r_id in enumerate(self.r_ids):
+            composite_extend.append(self.extend(r_id, q_nearests[i], qs[i], maxdists[r_id]))
         return composite_extend
     
     # Collision checking
@@ -269,8 +273,8 @@ class RRT:
 
     # Query
     def goal_reached(self, qs):
-        for i, q in enumerate(qs):
-            if self.distance(q, self.agents[i]["goal"]) > self.maxdists[i]:
+        for i, r_id in enumerate(self.r_ids):
+            if self.distance(r_id, qs[i], self.agents[i]["goal"]) > self.maxdists[i]:
                 return False
         return True
 
