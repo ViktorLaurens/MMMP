@@ -141,7 +141,6 @@ class PrioritizedPRM(DecoupledPRM):
                 config2 = other_discretized_path[min(other_discretized_path.keys(), key=lambda x: abs(x - t))]  # this makes sure that for max(time_keys) in other_discretized_path < t the goal config is selected
                 if self.robot_robot_collision(config1, config2, robot_id, other_robot_id):
                     return True
-
         return False
 
     def find_point_in_interval(self, config_t1, config_t2, t):
