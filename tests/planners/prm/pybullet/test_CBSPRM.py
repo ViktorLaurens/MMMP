@@ -4,7 +4,7 @@ import numpy as np
 import pybullet as p
 
 from planners.prm.pybullet.env import Environment
-from planners.prm.pybullet.CBSPRM import CBSPRM
+from planners.prm.pybullet.cbsprm import CBSPRM
 from robots.panda import Panda
 from utils.ik_utils import calculate_arm_ik
 from utils.pb_conf_utils import add_data_path, connect, disconnect, pause_sim, set_camera_pose
@@ -29,14 +29,14 @@ def main():
     panda2 = Panda(base_position=(-0.6, 0, 0.02), base_orientation=(0, 0, 0, 1))  # Specify base position and orientation for robot2
 
     # Disable collision between the robot and the ground plane
-    p.setCollisionFilterPair(panda1.robot_id, ground, -1, -1, enableCollision=0)
-    p.setCollisionFilterPair(panda2.robot_id, ground, -1, -1, enableCollision=0)
+    p.setCollisionFilterPair(panda1.r_id, ground, -1, -1, enableCollision=0)
+    p.setCollisionFilterPair(panda2.r_id, ground, -1, -1, enableCollision=0)
 
     # Calculate and set goal pose of arm 1
     tool_position_goal1 = (-0.3, 0.4, 0.5)
     tool_orientation_goal1 = p.getQuaternionFromEuler([np.radians(180), 0, 0])
     tool_pose_goal1 = (tool_position_goal1, tool_orientation_goal1)
-    arm1_goal = calculate_arm_ik(panda1.robot_id, panda1.tool_link, tool_pose_goal1)
+    arm1_goal = calculate_arm_ik(panda1.r_id, panda1.tool_link, tool_pose_goal1)
     arm1_goal = tuple(round(c, 3) for c in arm1_goal)
     
     arm1_goal = (-0.319, 1.221, -0.255, -0.199, 0.244, 1.456, -2.724)
@@ -53,7 +53,7 @@ def main():
     tool_position_start1 = (-0.3, -0.4, 0.5)
     tool_orientation_start1 = p.getQuaternionFromEuler([np.radians(-180), 0, 0])
     tool_pose_start1 = (tool_position_start1, tool_orientation_start1)
-    arm1_start = calculate_arm_ik(panda1.robot_id, panda1.tool_link, tool_pose_start1)
+    arm1_start = calculate_arm_ik(panda1.r_id, panda1.tool_link, tool_pose_start1)
     arm1_start = tuple(round(c, 3) for c in arm1_start)
     
     arm1_start = (0.41, 1.103, -0.243, -0.419, 0.219, 1.558, -2.045)
@@ -70,7 +70,7 @@ def main():
     tool_position_goal2 = (0.1, -0.4, 0.5)
     tool_orientation_goal2 = p.getQuaternionFromEuler([np.radians(-180), 0, 0])
     tool_pose_goal2 = (tool_position_goal2, tool_orientation_goal2)
-    arm2_goal = calculate_arm_ik(panda2.robot_id, panda2.tool_link, tool_pose_goal2)
+    arm2_goal = calculate_arm_ik(panda2.r_id, panda2.tool_link, tool_pose_goal2)
     arm2_goal = tuple(round(c, 3) for c in arm2_goal)
     
     arm2_goal = (-0.416, 1.116, -0.012, -0.293, 0.011, 1.434, 0.366)
@@ -87,7 +87,7 @@ def main():
     tool_position_start2 = (0.1, 0.4, 0.5)
     tool_orientation_start2 = p.getQuaternionFromEuler([np.radians(180), 0, 0])
     tool_pose_start2 = (tool_position_start2, tool_orientation_start2)
-    arm2_start = calculate_arm_ik(panda2.robot_id, panda2.tool_link, tool_pose_start2)
+    arm2_start = calculate_arm_ik(panda2.r_id, panda2.tool_link, tool_pose_start2)
     arm2_start = tuple(round(c, 3) for c in arm2_start)
     
     arm2_start = (0.413, 1.057, 0.02, -0.4, -0.018, 1.484, 1.207)
@@ -111,7 +111,7 @@ def main():
 
     pause_sim('Learn?')
     start_time = time.time()
-    prm = CBSPRM(env, maxdist=10, k1=10, k2=5, build_type='kdtree', n=10, t=10, time_step=0.01, local_step=0.02)
+    prm = CBSPRM(env, maxdist=10, k1=10, k2=5, build_type='kdtree', n=1000, t=10, time_step=0.01, local_step=0.02)
     learn_duration = time.time()-start_time
     print(f"Learning duration: {learn_duration}")
     # print(f"Edges: {prm.edge_dicts}")

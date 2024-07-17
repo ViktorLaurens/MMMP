@@ -5,6 +5,9 @@ Utilities and tools for implementation of PRM-based planners
 """
 from utils.planner_utils import Interval
 
+# constants
+INF = float("inf")
+
 # PRM classes
 # Comes from CBSPRM
 class Node:

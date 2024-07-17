@@ -1,6 +1,6 @@
 """
 
-Python implementation of Conflict-based search for pybullet simulation
+Python implementation of Conflict-based Search PRM for pybullet simulation
 
 """
 from itertools import combinations
@@ -52,7 +52,8 @@ class HighLevelNode:
 
 class CBSPRM:
     def __init__(self, environment, maxdist, k1=20, k2=10, build_type='kdtree', n=100, t=10, time_step=0.1, local_step=0.05) -> None:
-        self.robot_ids = np.linspace(0, len(environment.robot_models)-1, len(environment.robot_models), dtype=int)
+        # self.robot_ids = np.linspace(0, len(environment.robot_models)-1, len(environment.robot_models), dtype=int)
+        self.r_ids = [environment.robot_models[i].r_id for i in range(len(environment.robot_models))]
         self.config_spaces = self.create_config_spaces(environment.robot_models)
         self.maxdist = maxdist
         self.k1 = k1
@@ -62,8 +63,8 @@ class CBSPRM:
         self.t = t
         self.node_lists = self.create_node_lists(environment.robot_models)
         self.edge_dicts = self.create_edge_dicts(environment.robot_models)
-        self.node_id_q_dicts = self.create_node_id_q_dict(environment.robot_models)
-        self.node_q_id_dicts = self.create_node_q_id_dict(environment.robot_models)   
+        self.node_id_q_dicts = self.create_node_id_q_dicts(environment.robot_models)
+        self.node_q_id_dicts = self.create_node_q_id_dicts(environment.robot_models)   
 
         # collision checking
         self.time_step = time_step
@@ -92,22 +93,22 @@ class CBSPRM:
         return node_list
     
     def create_edge_dicts(self, robot_models):
-        edge_list = []
+        edge_dicts = []
         for _ in robot_models:
-            edge_list.append([])
-        return edge_list
+            edge_dicts.append({})
+        return edge_dicts
     
-    def create_node_id_q_dict(self, robot_models):
-        node_id_q_dict = []
+    def create_node_id_q_dicts(self, robot_models):
+        node_id_q_dicts = []
         for _ in robot_models:
-            node_id_q_dict.append({})
-        return node_id_q_dict
+            node_id_q_dicts.append({})
+        return node_id_q_dicts
     
-    def create_node_q_id_dict(self, robot_models):
-        node_q_id_dict = []
+    def create_node_q_id_dicts(self, robot_models):
+        node_q_id_dicts = []
         for _ in robot_models:
-            node_q_id_dict.append({})
-        return node_q_id_dict
+            node_q_id_dicts.append({})
+        return node_q_id_dicts
     
     def generate_node_id_q_dict(self, nodes):
         return {node.id: node.q for node in nodes}
@@ -117,41 +118,42 @@ class CBSPRM:
     
     # learning methods
     def generate_roadmaps(self):
-        for r_id in self.robot_ids:
+        for r_id in self.r_ids:
             self.generate_roadmap(r_id)
         return
 
     def generate_roadmap(self, r_id):
         # Build roadmap based on time
+        r_index = self.r_ids.index(r_id)
         if self.build_type == 't':
             start_time = time.time()
             while time.time() - start_time < self.t:
-                sample = np.random.uniform([interval.lower for interval in self.config_spaces[r_id]], 
-                                            [interval.upper for interval in self.config_spaces[r_id]], 
-                                            len(self.config_spaces[r_id])
+                sample = np.random.uniform([interval.lower for interval in self.config_spaces[r_index]], 
+                                            [interval.upper for interval in self.config_spaces[r_index]], 
+                                            len(self.config_spaces[r_index])
                                             )
                 sample = np.round(sample, 2)
-                new_node = Node(len(self.node_lists[r_id]), sample)
-                self.node_lists[r_id].append(new_node)
-                self.edge_dicts[r_id].update({new_node.id: []})
+                new_node = Node(len(self.node_lists[r_index]), sample)
+                self.node_lists[r_index].append(new_node)
+                self.edge_dicts[r_index].update({new_node.id: []})
                 self._find_and_connect_neighbors(new_node)
-            self.node_id_q_dicts[r_id] = self.generate_node_id_q_dict(self.node_lists[r_id])
-            self.node_q_id_dicts[r_id] = self.generate_node_q_id_dict(self.node_lists[r_id])
+            self.node_id_q_dicts[r_index] = self.generate_node_id_q_dict(self.node_lists[r_index])
+            self.node_q_id_dicts[r_index] = self.generate_node_q_id_dict(self.node_lists[r_index])
             return
         # build roadmap based on number of nodes
         elif self.build_type == 'n':
             for i in range(self.n):
-                sample = np.random.uniform([interval.lower for interval in self.config_spaces[r_id]], 
-                                            [interval.upper for interval in self.config_spaces[r_id]], 
-                                            len(self.config_spaces[r_id])
+                sample = np.random.uniform([interval.lower for interval in self.config_spaces[r_index]], 
+                                            [interval.upper for interval in self.config_spaces[r_index]], 
+                                            len(self.config_spaces[r_index])
                                             )
                 sample = np.round(sample, 2)
                 new_node = Node(i, sample)
-                self.node_lists[r_id].append(new_node)
-                self.edge_dicts[r_id].update({new_node.id: []})
+                self.node_lists[r_index].append(new_node)
+                self.edge_dicts[r_index].update({new_node.id: []})
                 self._find_and_connect_neighbors(r_id, new_node)
-            self.node_id_q_dicts[r_id] = self.generate_node_id_q_dict(self.node_lists[r_id])
-            self.node_q_id_dicts[r_id] = self.generate_node_q_id_dict(self.node_lists[r_id])
+            self.node_id_q_dicts[r_index] = self.generate_node_id_q_dict(self.node_lists[r_index])
+            self.node_q_id_dicts[r_index] = self.generate_node_q_id_dict(self.node_lists[r_index])
             return
         # build roadmap based on kdtree, nodes are set a priori, no update of tree possible once created
         elif self.build_type == 'kdtree':
@@ -162,14 +164,14 @@ class CBSPRM:
             #                             (self.n, len(self.config_spaces[r_id]))
             #                             )
             # samples = np.round(samples, 2)
-            self.node_lists[r_id] = [Node(i, sample) for i, sample in enumerate(samples)]
-            self.node_id_q_dicts[r_id] = self.generate_node_id_q_dict(self.node_lists[r_id])
-            self.node_q_id_dicts[r_id] = self.generate_node_q_id_dict(self.node_lists[r_id])
+            self.node_lists[r_index] = [Node(i, sample) for i, sample in enumerate(samples)]
+            self.node_id_q_dicts[r_index] = self.generate_node_id_q_dict(self.node_lists[r_index])
+            self.node_q_id_dicts[r_index] = self.generate_node_q_id_dict(self.node_lists[r_index])
 
             # create roadmap
-            self.edge_dicts[r_id] = {node.id: [] for node in self.node_lists[r_id]}
+            self.edge_dicts[r_index] = {node.id: [] for node in self.node_lists[r_index]}
             tree = KDTree(samples)  
-            for i, node in enumerate(self.node_lists[r_id]):
+            for i, node in enumerate(self.node_lists[r_index]):
                 id = node.id
                 q = node.q
                 # neighbors = tree.query_ball_point(q, r=self.maxdist)
@@ -179,9 +181,9 @@ class CBSPRM:
                     # break
                     if d > 0 \
                     and d < self.maxdist \
-                    and len(self.edge_dicts[r_id][id]) < self.k2 \
-                    and self.is_collision_free_edge(q, self.node_id_q_dicts[r_id][id2], r_id):
-                        self.edge_dicts[r_id][id].append(id2)
+                    and len(self.edge_dicts[r_index][id]) < self.k2 \
+                    and self.is_collision_free_edge(q, self.node_id_q_dicts[r_index][id2], r_id):
+                        self.edge_dicts[r_index][id].append(id2)
             return
         # raise error if build_type is not 't' or 'n' or 'kdtree'
         else:
@@ -189,10 +191,11 @@ class CBSPRM:
 
     def sample_valid(self, n, r_id):
         samples = []
+        r_index = self.r_ids.index(r_id)
         while len(samples) < n: 
-            sample = np.random.uniform([interval.lower for interval in self.config_spaces[r_id]], 
-                                        [interval.upper for interval in self.config_spaces[r_id]], 
-                                        len(self.config_spaces[r_id])
+            sample = np.random.uniform([interval.lower for interval in self.config_spaces[r_index]], 
+                                        [interval.upper for interval in self.config_spaces[r_index]], 
+                                        len(self.config_spaces[r_index])
                                         )
             sample = np.round(sample, 2)
             if self.is_collision_free_sample(sample, r_id):
@@ -200,9 +203,10 @@ class CBSPRM:
         return samples
 
     def _find_and_connect_neighbors(self, r_id, new_node):
+        r_index = self.r_ids.index(r_id)
         candidate_neighbors = []
-        distances = [(self.distance(new_node.config, node.config), node) 
-                     for node in self.node_lists[r_id][:-1]]
+        distances = [(self.distance(r_id, new_node.config, node.config), node) 
+                     for node in self.node_lists[r_index][:-1]]
         distances.sort()  # Sort by distance
         
         for distance, neighbor in distances:
@@ -218,46 +222,62 @@ class CBSPRM:
         return False
     
     def _try_connect(self, r_id, node1, node2):
+        r_index = self.r_ids.index(r_id)
         if self.is_collision_free_edge(node1, node2):
-            self.edge_dicts[r_id][node1.id].append(node2.id)
-            self.edge_dicts[r_id][node2.id].append(node1.id)
+            self.edge_dicts[r_index][node1.id].append(node2.id)
+            self.edge_dicts[r_index][node2.id].append(node1.id)
     
     #  Distance metric
-    def distance(self, q1, q2):
-        # Placeholder for distance calculation between two configurations
+    # def distance(self, q1, q2):
+    #     # Placeholder for distance calculation between two configurations
+    #     return np.linalg.norm(np.array(q1) - np.array(q2))
+    
+    def distance(self, r_id, q1, q2):
+        return self.specific_distance(r_id, q1, q2)
+    
+    def general_distance(self, q1, q2):
         return np.linalg.norm(np.array(q1) - np.array(q2))
 
+    def specific_distance(self, r_id, q1, q2):
+        index = self.r_ids.index(r_id)
+        model = self.robot_models[index]
+        return model.distance_metric(q1, q2)
+
     #  Collision checking
-    def is_collision_free_sample(self, sample, robot_id):
+    def is_collision_free_sample(self, sample, r_id):
         # Check for collisions between the robot and the obstacles
-        self.robot_models[robot_id].set_arm_pose(sample)
+        r_index = self.r_ids.index(r_id)
+        self.robot_models[r_index].set_arm_pose(sample)
         for obstacle in self.obstacles:
-            if self.env.robot_obstacle_collision(self.robot_models[robot_id], obstacle):
+            if self.env.robot_obstacle_collision(self.robot_models[r_index], obstacle):
                 return False
         return True
     
-    def is_collision_free_node(self, node, robot_id):
-        return self.is_collision_free_sample(node.q, robot_id)
+    def is_collision_free_node(self, node, r_id):
+        return self.is_collision_free_sample(node.q, r_id)
 
-    def is_collision_free_edge(self, q1, q2, robot_id):
+    def is_collision_free_edge(self, q1, q2, r_id):
         # Check for collisions along the line segment between s and g
         q1 = np.array(q1)
         q2 = np.array(q2)
         for t in np.arange(0, 1, self.local_step):
             sample = q1 + t * (q2 - q1)
-            if not self.is_collision_free_sample(sample, robot_id):
+            if not self.is_collision_free_sample(sample, r_id):
                 return False
         return True
     
     def robot_robot_collision(self, q1, q2, r_1_id, r_2_id):
-        self.robot_models[r_1_id].set_arm_pose(q1)
-        self.robot_models[r_2_id].set_arm_pose(q2)
-        return self.env.robot_robot_collision(self.robot_models[r_1_id], self.robot_models[r_2_id])
+        r_1_index = self.r_ids.index(r_1_id)
+        r_2_index = self.r_ids.index(r_2_id)
+        self.robot_models[r_1_index].set_arm_pose(q1)
+        self.robot_models[r_2_index].set_arm_pose(q2)
+        return self.env.robot_robot_collision(self.robot_models[r_1_index], self.robot_models[r_2_index])
 
     def transition_valid(self, r_id, d_to_n_1, n_1_id, n_2_id, conflict_times, constraints_from_t):
+        r_index = self.r_ids.index(r_id)
         # Get the configurations for the current node and the neighbor node
-        q1 = np.array(self.node_id_q_dicts[r_id][n_1_id])
-        q2 = np.array(self.node_id_q_dicts[r_id][n_2_id])
+        q1 = np.array(self.node_id_q_dicts[r_index][n_1_id])
+        q2 = np.array(self.node_id_q_dicts[r_index][n_2_id])
 
         # Calculate the time interval between the current node and the neighbor node
         t1 = float(d_to_n_1 / self.local_step) * self.time_step
@@ -294,7 +314,7 @@ class CBSPRM:
     def query(self):
         start = HighLevelNode()
         # self.n_ct_nodes += 1
-        for r_id in self.robot_ids:
+        for r_id in self.r_ids:
             self.add_start_goal_nodes(r_id)
             start.constraint_dict[r_id] = []
         start.solution = self.compute_solution(start.constraint_dict)
@@ -335,7 +355,7 @@ class CBSPRM:
 
     def compute_solution(self, constraint_dict):
         solution = {}
-        for r_id in self.robot_ids:
+        for r_id in self.r_ids:
             constraints = constraint_dict[r_id]
             id_path = self.query_robot(r_id, constraints) # path is id_path
             if not id_path:
@@ -346,9 +366,10 @@ class CBSPRM:
     def compute_cost(self, solution={}):
         total_cost = 0
         for r_id, id_path in solution.items():
+            r_index = self.r_ids.index(r_id)
             cost = 0
             for i in range(len(id_path) - 1):
-                cost += self.distance(self.node_id_q_dicts[r_id][id_path[i]], self.node_id_q_dicts[r_id][id_path[i+1]])
+                cost += self.distance(r_id, self.node_id_q_dicts[r_index][id_path[i]], self.node_id_q_dicts[r_index][id_path[i+1]])
             total_cost += cost
         return total_cost
 
@@ -404,8 +425,9 @@ class CBSPRM:
             return path
         
     def add_start_goal_nodes(self, r_id):
-        start_config = self.agents[r_id]['start']
-        goal_config = self.agents[r_id]['goal']
+        r_index = self.r_ids.index(r_id)
+        start_config = self.agents[r_index]['start']
+        goal_config = self.agents[r_index]['goal']
 
         if not self.is_collision_free_sample(start_config, r_id): 
             print(f"Start configuration for robot {r_id} is in collision.")
@@ -415,40 +437,45 @@ class CBSPRM:
             return
         
         # Add start node to roadmap based on distance 
-        self.edge_dicts[r_id].update({-1: []})  # -1 -> start config
-        for node in self.node_lists[r_id]:
-            if len(self.edge_dicts[r_id][-1]) == self.k2:
+        self.edge_dicts[r_index].update({-1: []})  # -1 -> start config
+        for node in self.node_lists[r_index]:
+            if len(self.edge_dicts[r_index][-1]) == self.k2:
                 break
-            if self.distance(start_config, node.q) <= self.maxdist and self.is_collision_free_edge(start_config, node.q, r_id):
-                self.edge_dicts[r_id][-1].append(node.id)
-                self.edge_dicts[r_id][node.id].append(-1)
-        self.node_id_q_dicts[r_id].update({-1: tuple(start_config)})
-        self.node_q_id_dicts[r_id].update({tuple(start_config): -1})
+            if self.distance(r_id, start_config, node.q) <= self.maxdist and self.is_collision_free_edge(start_config, node.q, r_id):
+                self.edge_dicts[r_index][-1].append(node.id)
+                self.edge_dicts[r_index][node.id].append(-1)
+        self.node_id_q_dicts[r_index].update({-1: tuple(start_config)})
+        self.node_q_id_dicts[r_index].update({tuple(start_config): -1})
 
         # Add goal node to roadmap based on distance
-        self.edge_dicts[r_id].update({-2: []})  # -2 -> goal config
-        for node in self.node_lists[r_id]:
-            if len(self.edge_dicts[r_id][-2]) == self.k2:
+        self.edge_dicts[r_index].update({-2: []})  # -2 -> goal config
+        for node in self.node_lists[r_index]:
+            if len(self.edge_dicts[r_index][-2]) == self.k2:
                 break
-            if self.distance(goal_config, node.q) <= self.maxdist and self.is_collision_free_edge(goal_config, node.q, r_id):
-                self.edge_dicts[r_id][-2].append(node.id)
-                self.edge_dicts[r_id][node.id].append(-2)
-        self.node_id_q_dicts[r_id].update({-2: tuple(goal_config)})
-        self.node_q_id_dicts[r_id].update({tuple(goal_config): -2})
+            if self.distance(r_id, goal_config, node.q) <= self.maxdist and self.is_collision_free_edge(goal_config, node.q, r_id):
+                self.edge_dicts[r_index][-2].append(node.id)
+                self.edge_dicts[r_index][node.id].append(-2)
+        self.node_id_q_dicts[r_index].update({-2: tuple(goal_config)})
+        self.node_q_id_dicts[r_index].update({tuple(goal_config): -2})
         return
         
     def delete_start_goal_nodes(self, r_id, start_config, goal_config, start_node, goal_node):
-        self.edge_dicts[r_id].pop(-1)
-        self.edge_dicts[r_id].pop(-2)
-        self.edge_dicts[r_id][start_node.id].remove(-1)
-        self.edge_dicts[r_id][goal_node.id].remove(-2)
-        self.node_id_q_dicts[r_id].pop(-1)
-        self.node_id_q_dicts[r_id].pop(-2)
-        self.node_q_id_dicts[r_id].pop(tuple(start_config))
-        self.node_q_id_dicts[r_id].pop(tuple(goal_config))
+        r_index = self.r_ids.index(r_id)
+
+        self.edge_dicts[r_index].pop(-1)
+        self.edge_dicts[r_index].pop(-2)
+        self.edge_dicts[r_index][start_node.id].remove(-1)
+        self.edge_dicts[r_index][goal_node.id].remove(-2)
+        self.node_id_q_dicts[r_index].pop(-1)
+        self.node_id_q_dicts[r_index].pop(-2)
+        self.node_q_id_dicts[r_index].pop(tuple(start_config))
+        self.node_q_id_dicts[r_index].pop(tuple(goal_config))
         return
 
     def discretize_path_in_time(self, r_id, id_path):
+        # Calculate index of r_id in self.r_ids
+        r_index = self.r_ids.index(r_id)
+
         # Initialize the discretized path    
         discretized_path = {}
 
@@ -459,8 +486,8 @@ class CBSPRM:
         # Discretize the intervals in id_path
         for i in range(len(id_path) - 1):
             interval_start_t = interval_end_t
-            start_config = np.array(self.node_id_q_dicts[r_id][id_path[i]])
-            end_config = np.array(self.node_id_q_dicts[r_id][id_path[i+1]])
+            start_config = np.array(self.node_id_q_dicts[r_index][id_path[i]])
+            end_config = np.array(self.node_id_q_dicts[r_index][id_path[i+1]])
             interval_end_t = interval_start_t + np.linalg.norm(end_config - start_config) / self.local_step * self.time_step
             first_multiple_of_timestep = np.round(np.ceil(interval_start_t / self.time_step) * self.time_step, 1)
             for t in np.arange(first_multiple_of_timestep, interval_end_t, self.time_step):
@@ -475,6 +502,9 @@ class CBSPRM:
 
     #  Astar search
     def a_star_search(self, r_id, constraints):
+        # Calculate index of r_id in self.r_ids
+        r_index = self.r_ids.index(r_id)
+
         # constants
         start_id = -1
         goal_id = -2
@@ -487,12 +517,12 @@ class CBSPRM:
             constraints_from_t[constraint.t].append(constraint)
     
         came_from = {}
-        g_score = {node_id: np.inf for node_id in self.edge_dicts[r_id].keys()}
+        g_score = {node_id: np.inf for node_id in self.edge_dicts[r_index].keys()}
         g_score[start_id] = 0
-        f_score = {node_id: np.inf for node_id in self.edge_dicts[r_id].keys()}
+        f_score = {node_id: np.inf for node_id in self.edge_dicts[r_index].keys()}
         f_score[start_id] = self.heuristic(start_id, goal_id, r_id)
 
-        unvisited_nodes = set(self.edge_dicts[r_id].keys())  # Track unvisited nodes
+        unvisited_nodes = set(self.edge_dicts[r_index].keys())  # Track unvisited nodes
 
         while unvisited_nodes:
             # Get the node with the lowest f score
@@ -506,14 +536,14 @@ class CBSPRM:
                 return self.reconstruct_path(current_id, came_from), g_score[goal_id] # Path found, reconstruct the path from start to goal
 
             # Check each neighbor of the current node
-            for neighbor_id in self.edge_dicts[r_id][current_id]:
+            for neighbor_id in self.edge_dicts[r_index][current_id]:
                 if not self.transition_valid(r_id, g_score[current_id], current_id, neighbor_id, conflict_times, constraints_from_t):
                     continue
                 
-                current_q = self.node_id_q_dicts[r_id][current_id]
-                neighbor_q = self.node_id_q_dicts[r_id][neighbor_id]
+                current_q = self.node_id_q_dicts[r_index][current_id]
+                neighbor_q = self.node_id_q_dicts[r_index][neighbor_id]
                 # Calculate the distance between current node and neighbor
-                distance = self.distance(current_q, neighbor_q)
+                distance = self.distance(r_id, current_q, neighbor_q)
 
                 # Update the distance from start to neighbor
                 new_distance = g_score[current_id] + distance
@@ -527,9 +557,12 @@ class CBSPRM:
             return self.reconstruct_path(goal_id, came_from), g_score[goal_id] # Path found, reconstruct the path from start to goal
 
     def heuristic(self, node_id1, node_id2, r_id):
-        q1 = np.array(self.node_id_q_dicts[r_id][node_id1])
-        q2 = np.array(self.node_id_q_dicts[r_id][node_id2])
-        return self.distance(q1, q2)
+        # Calculate index of r_id in self.r_ids
+        r_index = self.r_ids.index(r_id)
+        
+        q1 = np.array(self.node_id_q_dicts[r_index][node_id1])
+        q2 = np.array(self.node_id_q_dicts[r_index][node_id2])
+        return self.distance(r_id, q1, q2)
     
     def reconstruct_path(self, current_id, came_from):
         path = [current_id]
@@ -546,6 +579,6 @@ class CBSPRM:
                 if t == 0:
                     continue
                 q_prev = path[np.round(t-self.time_step, 1)]
-                path_length += self.distance(q_prev, q, r_id)
+                path_length += self.distance(r_id, q_prev, q)
             total_length += path_length
         return total_length
