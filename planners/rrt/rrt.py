@@ -178,7 +178,7 @@ class RRT:
     def specific_distance(self, r_id, q1, q2):
         index = self.r_ids.index(r_id)
         model = self.robot_models[index]
-        return model.panda_specific_distance_metric(q1, q2)
+        return model.distance_metric(q1, q2)
     
     def composite_distance(self, qs_1, qs_2):
         d = 0

@@ -145,7 +145,7 @@ class Panda(Robot):
         return T[:3, :3]
     
     #  DISTANCE METRICS
-    def panda_specific_distance_metric(self, q1, q2):
+    def distance_metric(self, q1, q2):
         """ Compute the specific distance metric for the panda robot."""
         return self.euclidean_distance_metric(q1, q2)
     
