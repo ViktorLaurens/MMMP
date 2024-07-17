@@ -257,7 +257,7 @@ class RRT:
         return True
     
     def composite_collision_free_segment(self, q_nearests, q_news):
-        res = int(np.average([int(maxdist / local_step_size) for maxdist, local_step_size in zip(self.maxdists.values(), self.local_step_sizes.values())]))
+        res = int(self.maxdists[0] / self.local_step_sizes[0]) # local_step_size is derived as a fraction of maxdist, here we calculate this fraction from local_step_sizes and maxdists
         segments = {}
         for i, r_id in enumerate(self.r_ids):
             segments.update({r_id: np.linspace(q_nearests[i], q_news[i], res)})
