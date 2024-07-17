@@ -3,6 +3,15 @@ import imageio
 import numpy as np
 import pybullet as p
 
+# Define the path to your project root directory
+project_root = 'C:\\Users\\vikto\\MMMP'
+
+# Add the project root directory to sys.path if it's not already included
+import sys
+import os
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from planners.prm.pybullet.env import Environment
 from planners.prm.pybullet.prioritized_prm import PrioritizedPRM
 from robots.panda import Panda
@@ -111,7 +120,7 @@ def main():
 
     pause_sim('Learn?')
     start_time = time.time()
-    prm = PrioritizedPRM(env, maxdist=10, k1=10, k2=5, build_type='kdtree', n=100, t=10, time_step=0.01, local_step=0.02)
+    prm = PrioritizedPRM(env, k1=10, k2=5, build_type='kdtree', n=100, t=10, time_step=0.01)
     learn_duration = time.time()-start_time
     print(f"Learning duration: {learn_duration}")
     # print(f"Edges: {prm.edge_dicts}")

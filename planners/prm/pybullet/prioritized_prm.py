@@ -14,11 +14,18 @@ from planners.prm.pybullet.utils import INF
 from planners.prm.pybullet.utils import Node
 
 class PrioritizedPRM:
-    def __init__(self, environment, maxdist, k1=20, k2=10, build_type='kdtree', n=100, t=10, time_step=0.1, local_step=0.05) -> None:
-        # self.robot_ids = np.linspace(0, len(environment.robot_models)-1, len(environment.robot_models), dtype=int)
+    def __init__(self, environment, maxdist=None, k1=20, k2=10, build_type='kdtree', n=100, t=10, time_step=0.1, local_step=None) -> None:
+        # unpack environmental data
+        self.env = environment
+        self.agents = environment.agents                
+        self.robot_models = environment.robot_models    
+        self.obstacles = environment.obstacles
+
         self.r_ids = [environment.robot_models[i].r_id for i in range(len(environment.robot_models))]
         self.config_spaces = self.create_config_spaces(environment.robot_models)
         self.maxdist = maxdist
+        if self.maxdist is None:
+            self.maxdist = self.calc_maxdist(self.r_ids, self.config_spaces, 5)
         self.k1 = k1
         self.k2 = k2
         self.build_type = build_type
@@ -32,12 +39,8 @@ class PrioritizedPRM:
         # collision checking
         self.time_step = time_step
         self.local_step = local_step
-
-        # unpack environmental data
-        self.env = environment
-        self.agents = environment.agents                
-        self.robot_models = environment.robot_models    
-        self.obstacles = environment.obstacles
+        if self.local_step is None:
+            self.local_step = self.maxdist / 10
 
         # call method to generate roadmap
         self.generate_roadmaps()
@@ -48,6 +51,19 @@ class PrioritizedPRM:
         for model in robot_models:
             config_spaces.append(model.arm_c_space)
         return config_spaces
+    
+    def calc_maxdists(self, r_ids, c_spaces, res):
+        assert len(r_ids) == len(c_spaces)
+        maxdists = {}
+        for r_id, c_space in zip(r_ids, c_spaces): 
+            unit_vector = np.array([])
+            for interval in c_space: 
+                unit_vector = np.append(unit_vector, (interval.upper - interval.lower) / res + interval.lower)
+            maxdists.update({r_id: self.distance(r_id, unit_vector, [interval.lower for interval in c_space])})
+        return maxdists
+    
+    def calc_maxdist(self, r_ids, c_spaces, res):
+        return np.average(list(self.calc_maxdists(r_ids, c_spaces, res).values()))
     
     def create_node_lists(self, robot_models):
         node_list = []
@@ -397,17 +413,31 @@ class PrioritizedPRM:
         return
         
     def delete_start_goal_nodes(self, r_id):
+        # Get the index of the given r_id in self.r_ids
         r_index = self.r_ids.index(r_id)
+        
+        # Remove entries for node -1 and node -2 in edge_dicts
+        if -1 in self.edge_dicts[r_index]:
+            self.edge_dicts[r_index].pop(-1)
+        if -2 in self.edge_dicts[r_index]:
+            self.edge_dicts[r_index].pop(-2)
+        
+        # Remove references to nodes -1 and -2 in neighbor lists of other nodes
+        for key in list(self.edge_dicts[r_index].keys()):
+            if -1 in self.edge_dicts[r_index][key]:
+                self.edge_dicts[r_index][key].remove(-1)
+            if -2 in self.edge_dicts[r_index][key]:
+                self.edge_dicts[r_index][key].remove(-2)
 
-        self.edge_dicts[r_index].pop(-1)
-        self.edge_dicts[r_index].pop(-2)
-
-        # self.edge_dicts[r_index][start_node.id].remove(-1)
-        # self.edge_dicts[r_index][goal_node.id].remove(-2)
+        # Get the configurations for nodes -1 and -2
         start_config = self.node_id_q_dicts[r_index][-1]
         goal_config = self.node_id_q_dicts[r_index][-2]
+
+        # Remove entries for node -1 and node -2 in node_id_q_dicts
         self.node_id_q_dicts[r_index].pop(-1)
         self.node_id_q_dicts[r_index].pop(-2)
+
+        # Remove entries for the start and goal configurations in node_q_id_dicts
         self.node_q_id_dicts[r_index].pop(start_config)
         self.node_q_id_dicts[r_index].pop(goal_config)
         return

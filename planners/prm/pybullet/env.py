@@ -82,9 +82,10 @@ class Environment:
         frames = []  # List to hold images for the video
 
         for t in np.arange(0, max_t + time_step, time_step):
-            for i, path in enumerate(paths.values()):
+            for r_id, path in paths.items():
+                r_index = [i for i, agent in enumerate(self.agents) if agent["model"].r_id == r_id][0]
                 closest_key = min(path.keys(), key=lambda x: abs(x - t))
-                self.robot_models[i].set_arm_pose(path[closest_key])
+                self.robot_models[r_index].set_arm_pose(path[closest_key])
             
             img = self.capture_frame()  # Capture the current state of the simulation
             frames.append(img)
