@@ -34,8 +34,8 @@ def main():
     add_data_path()
     set_camera_pose(camera_point=[0, -1.2, 1.2])
 
-    panda1 = Panda(base_position=(0.8, 0, 0.02), base_orientation=(0, 0, 1, 0))  # Specify base position and orientation for robot1
-    panda2 = Panda(base_position=(-0.8, 0, 0.02), base_orientation=(0, 0, 0, 1))  # Specify base position and orientation for robot2
+    panda1 = Panda(base_position=(0.6, 0, 0.02), base_orientation=(0, 0, 1, 0))  # Specify base position and orientation for robot1
+    panda2 = Panda(base_position=(-0.6, 0, 0.02), base_orientation=(0, 0, 0, 1))  # Specify base position and orientation for robot2
     ground = p.loadURDF("plane.urdf")
 
     # Disable collision between the robot and the ground plane
