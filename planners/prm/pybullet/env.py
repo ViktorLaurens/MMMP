@@ -66,8 +66,8 @@ class Environment:
     
     def robot_self_collision(self, robot, collision_threshold=0.01):
         # check for collision of non-adjacent links
-        for i in range(robot.dimension):
-            for j in range(i+2, robot.dimension):
+        for i in range(robot.arm_dimension-2):
+            for j in range(i+2, robot.arm_dimension):
                 closest_points = p.getClosestPoints(bodyA=robot.r_id, linkIndexA=i, bodyB=robot.r_id, linkIndexB=j, distance=collision_threshold)
                 if closest_points:
                     return True

@@ -18,7 +18,7 @@ class DistanceCoupledPRM(CoupledPRM):
     where each new node is connected to every node within maxdist
     distance that can be connected to it with a collision free straight edge. 
     """
-    def __init__(self, environment, max_edge_len, build_type = 'n', n_nodes=100) -> None:
+    def __init__(self, environment, max_edge_len, build_type='n', n_nodes=100) -> None:
         super().__init__(environment)
         self.max_edge_len = max_edge_len
         if build_type == 'n':

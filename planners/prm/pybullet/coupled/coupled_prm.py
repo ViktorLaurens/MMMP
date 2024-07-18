@@ -20,7 +20,7 @@ from planners.prm.pybullet.utils import INF, Node
 from robots.panda import Panda
 
 class CoupledPRM: 
-    def __init__(self, environment, local_step=0.05) -> None:
+    def __init__(self, environment, time_step=0.1, local_step=0.05) -> None:
         # unpack environmental data
         self.env = environment
         self.agents = environment.agents                
@@ -30,7 +30,8 @@ class CoupledPRM:
         # robot handling
         self.c_space = self.create_composite_c_space(environment.robot_models) # composite configuration space
 
-        # local step
+        # time step and local step
+        self.time_step = time_step
         self.local_step = local_step
 
         # Create data structures for roadmap handling
@@ -141,22 +142,22 @@ class CoupledPRM:
     # local planner 
     def is_collision_free_sample(self, sample):
         for i, robot1 in enumerate(self.robot_models): 
-            config1 = sample[i*robot1.n_links:(i+1)*robot1.n_links]
+            config1 = sample[i*robot1.arm_dimension:(i+1)*robot1.arm_dimension]
             # self collisions
             if self.robot_self_collision(config1, robot1):
                 return False
             # collisions with other robots
             for j, robot2 in enumerate(self.robot_models[i+1:]): 
-                # config1 = sample[i*robot1.n_links:(i+1)*robot1.n_links]
-                config2 = sample[(i+j+1)*robot2.n_links:(i+j+2)*robot2.n_links]
+                # config1 = sample[i*robot1.arm_dimension:(i+1)*robot1.arm_dimension]
+                config2 = sample[(i+j+1)*robot2.arm_dimension:(i+j+2)*robot2.arm_dimension]
                 sample12 = self.merge_configs([config1, config2])
                 if self.robot_robot_collision(sample12, robot1, robot2):
                     return False
             for obstacle in self.obstacles:
-                # sample1 = sample[i*robot1.n_links:(i+1)*robot1.n_links]
+                # sample1 = sample[i*robot1.arm_dimension:(i+1)*robot1.arm_dimension]
                 if self.robot_obstacle_collision(config1, robot1, obstacle):
                     return False
-        return 
+        return True
     
     def robot_self_collision(self, q, robot):
         robot.set_arm_pose(q)
@@ -221,9 +222,10 @@ class CoupledPRM:
         print(f"A*: Composite path in {a_star_duration:.6f} seconds with distance {a_distance:.2f}")
         
         # Store the path for the agent
-        path = a_path
+        id_path = a_path
+        return self.st_path_from_id_path(id_path)
         for config in path:
-            split_configs = self.split_config(self.node_id_config_dict[config])
+            split_configs = self.split_config(self.node_id_q_dict[config])
             for i, agent in enumerate(self.agents):
                 if agent['name'] not in paths:
                     paths[agent['name']] = []
@@ -240,6 +242,51 @@ class CoupledPRM:
                 min_dist = dist
                 nearest_node = node
         return nearest_node
+    
+    def st_path_from_id_path(self, id_path):
+        """Converts a path of node IDs to a path of configurations of the structure: {r_id: {t: q}}."""
+        paths = [[np.array(agent["start"])] for agent in self.agents]
+        for node_id in id_path:
+            composite_q = self.node_id_q_dict[node_id]
+            qs = self.split_config(composite_q)
+            for i in range(len(qs)):
+                paths[i].append(qs[i])
+        for i, agent in enumerate(self.agents):
+            paths[i].append(np.array(agent["goal"]))
+
+        st_path = {}
+        for i, model in enumerate(self.robot_models):
+            st_path[model.r_id] = self.discretize_path_in_time(paths[i])
+        return st_path
+    
+    def discretize_path_in_time(self, q_path):
+        # Initialize the discretized path    
+        discretized_path = {}
+
+        # Calculate the start and end time of the first interval
+        interval_start_t = 0.0
+        interval_end_t = 0.0 
+
+        # Discretize the intervals in id_path
+        for i in range(len(q_path) - 1):
+            interval_start_t = interval_end_t
+            start_config = np.array(q_path[i])
+            end_config = np.array(q_path[i+1])
+            interval_end_t = interval_start_t + np.linalg.norm(end_config - start_config) / self.local_step * self.time_step
+            first_multiple_of_timestep = np.round(np.ceil(interval_start_t / self.time_step) * self.time_step, 1)
+            for t in np.arange(first_multiple_of_timestep, interval_end_t, self.time_step):
+                t = np.round(t, 1)
+                q = self.find_q_in_q_t_interval_given_t(np.append(start_config, interval_start_t), np.append(end_config, interval_end_t), t)
+                discretized_path[t] = q
+
+        # Add the goal configuration to the discretized path
+        discretized_path[interval_end_t] = end_config
+        return discretized_path
+    
+    def find_q_in_q_t_interval_given_t(self, q1_t1, q2_t2, t):
+        delta_t = q2_t2[-1] - q1_t1[-1]
+        x = (t - q1_t1[-1]) / delta_t
+        return np.round(q1_t1[:-1] + (q2_t2[:-1] - q1_t1[:-1]) * x, 2)
     
     # Search methods
     def dijkstra_search(self, start_node_id, goal_node_id):
@@ -264,8 +311,8 @@ class CoupledPRM:
 
             # Check each neighbor of the current node
             for neighbor_id in self.roadmap[current_node_id]:
-                neighbor_config = self.node_id_config_dict[neighbor_id]
-                current_node_config = self.node_id_config_dict[current_node_id]
+                neighbor_config = self.node_id_q_dict[neighbor_id]
+                current_node_config = self.node_id_q_dict[current_node_id]
                 # Calculate the distance between current node and neighbor
                 distance = self.distance(neighbor_config, current_node_config)
 
@@ -307,8 +354,8 @@ class CoupledPRM:
 
             # Check each neighbor of the current node
             for neighbor_id in self.roadmap[current_node_id]:
-                neighbor_config = self.node_id_config_dict[neighbor_id]
-                current_node_config = self.node_id_config_dict[current_node_id]
+                neighbor_config = self.node_id_q_dict[neighbor_id]
+                current_node_config = self.node_id_q_dict[current_node_id]
                 # Calculate the distance between current node and neighbor
                 distance = self.distance(neighbor_config, current_node_config)
 
@@ -332,8 +379,8 @@ class CoupledPRM:
 
     def heuristic(self, node_id1, node_id2):
         """Calculate the distance between two nodes."""
-        config1 = np.array(self.node_id_config_dict[node_id1])
-        config2 = np.array(self.node_id_config_dict[node_id2])
+        config1 = np.array(self.node_id_q_dict[node_id1])
+        config2 = np.array(self.node_id_q_dict[node_id2])
         return self.distance(config1, config2)
 
     # compute
@@ -356,9 +403,9 @@ class CoupledPRM:
         fig, ax = plt.subplots() 
 
         for node, neighbors in self.roadmap.items():
-            node_q = self.node_id_config_dict[node]
+            node_q = self.node_id_q_dict[node]
             for neighbor in neighbors:
-                neighbor_q = self.node_id_config_dict[neighbor]
+                neighbor_q = self.node_id_q_dict[neighbor]
                 ax.plot([node_q[0], neighbor_q[0]], [node_q[1], neighbor_q[1]], 'k-', linewidth=0.5)
         
         for node in self.nodes:
@@ -373,8 +420,8 @@ class CoupledPRM:
             ax.plot(goal_q[0], goal_q[1], 'o', color='green', markersize=4)
         
         ax.set_aspect('equal', adjustable='box')
-        ax.set_xlim([self.config_space[0].lower, self.config_space[0].upper])
-        ax.set_ylim([self.config_space[1].lower, self.config_space[1].upper])
+        ax.set_xlim([self.c_space[0].lower, self.c_space[0].upper])
+        ax.set_ylim([self.c_space[1].lower, self.c_space[1].upper])
         ax.set_xticks([])  # Disable x-axis ticks
         ax.set_yticks([])  # Disable y-axis ticks
         plt.show()

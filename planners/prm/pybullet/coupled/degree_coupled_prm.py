@@ -7,7 +7,7 @@ Notes:
  - MULTI ROBOT USE
 
 """
-from planners.prm.planar.multi_arm.coupled.coupled_prm import CoupledPRM
+from planners.prm.pybullet.coupled.coupled_prm import CoupledPRM
 from planners.prm.planar.utils import Node
 from scipy.spatial import KDTree
 
@@ -26,9 +26,9 @@ class KDTreeKNNCoupledPRM(CoupledPRM):
         self.build_roadmap_n(int(n_samples))
 
         # print data
-        nr_nodes = self.compute_nr_nodes
-        nr_edges = self.compute_nr_edges
-        avg_degree = self.compute_avg_degree
+        nr_nodes = self.compute_combined_nr_nodes
+        nr_edges = self.compute_combined_nr_edges
+        avg_degree = self.compute_combined_avg_degree
         print(f"\nRoadmap data: \nnodes: {nr_nodes} \nedges: {nr_edges} \naverage degree: {avg_degree}")
 
     # building roadmap
