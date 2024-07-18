@@ -4,7 +4,7 @@ import numpy as np
 import pybullet as p
 
 from planners.prm.pybullet.env import Environment
-from planners.prm.pybullet.cbsprm import CBSPRM
+from planners.prm.pybullet.decoupled.cbsprm import CBSPRM
 from robots.panda import Panda
 from utils.ik_utils import calculate_arm_ik
 from utils.pb_conf_utils import add_data_path, connect, disconnect, pause_sim, set_camera_pose
@@ -111,7 +111,7 @@ def main():
 
     pause_sim('Learn?')
     start_time = time.time()
-    prm = CBSPRM(env, maxdist=10, k1=10, k2=5, build_type='kdtree', n=1000, t=10, time_step=0.01, local_step=0.02)
+    prm = CBSPRM(env, maxdist=10, k1=10, k2=5, build_type='kdtree', n=100, t=10, time_step=0.01, local_step=0.02)
     learn_duration = time.time()-start_time
     print(f"Learning duration: {learn_duration}")
     # print(f"Edges: {prm.edge_dicts}")

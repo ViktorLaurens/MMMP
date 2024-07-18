@@ -13,7 +13,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from planners.prm.pybullet.env import Environment
-from planners.prm.pybullet.prioritized_prm import PrioritizedPRM
+from planners.prm.pybullet.decoupled.prioritized_prm import PrioritizedPRM
 from robots.panda import Panda
 from utils.ik_utils import calculate_arm_ik
 from utils.pb_conf_utils import add_data_path, connect, disconnect, pause_sim, set_camera_pose
@@ -120,7 +120,7 @@ def main():
 
     pause_sim('Learn?')
     start_time = time.time()
-    prm = PrioritizedPRM(env, k1=10, k2=5, build_type='kdtree', n=1000, t=10, time_step=0.01, maxdist=10, local_step=0.05)
+    prm = PrioritizedPRM(env, k1=10, k2=5, build_type='kdtree', n=100, t=10, time_step=0.01, maxdist=10, local_step=0.05)
     learn_duration = time.time()-start_time
     print(f"Learning duration: {learn_duration}")
     # print(f"Edges: {prm.edge_dicts}")
