@@ -25,6 +25,9 @@ class Environment:
                 raise ValueError(f"Agent {agent['name']} start configuration is in collision.")
             
     def robot_collision(self, robot):
+        if self.robot_self_collision(robot):
+            print("Robot self collision")
+            return True
         for obstacle in self.obstacles:
             if self.robot_obstacle_collision(robot, obstacle):
                 print("Robot obstacle collision")
@@ -59,6 +62,15 @@ class Environment:
         closest_points = p.getClosestPoints(bodyA=robot1.r_id, bodyB=robot2.r_id, distance=collision_threshold)
         if closest_points:
             return True
+        return 
+    
+    def robot_self_collision(self, robot, collision_threshold=0.01):
+        # check for collision of non-adjacent links
+        for i in range(robot.dimension):
+            for j in range(i+2, robot.dimension):
+                closest_points = p.getClosestPoints(bodyA=robot.r_id, linkIndexA=i, bodyB=robot.r_id, linkIndexB=j, distance=collision_threshold)
+                if closest_points:
+                    return True
         return False
     
     def execute_joint_motion(self, paths):
