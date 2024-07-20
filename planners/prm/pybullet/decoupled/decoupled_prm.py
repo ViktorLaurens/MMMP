@@ -75,6 +75,9 @@ class DecoupledPRM():
             maxdists.update({r_id: self.distance(r_id, unit_vector, [interval.lower for interval in c_space])})
         return maxdists
     
+    def calc_res_from_n_and_k2(self, n, k2):
+        pass
+    
     def calc_maxdist(self, r_ids, c_spaces, res):
         return np.average(list(self.calc_maxdists(r_ids, c_spaces, res).values()))
     
@@ -169,11 +172,12 @@ class DecoupledPRM():
                 # neighbors = tree.query_ball_point(q, r=self.maxdist)
                 distances, neighbor_idxs = tree.query(q, k=self.k1+1) # +1 to exclude the node itself
                 for d, id2 in zip(distances, neighbor_idxs):
-                    # if >= k2: 
-                    # break
+                    # d as given by the query of the kdtree is the minkowski distance, not the specifically defined distance metric
+                    d = self.distance(r_id, q, self.node_id_q_dicts[r_index][id2]) # this conversion is needed to compare d to maxdist in following 'if' statement
+                    if len(self.edge_dicts[r_index][id]) >= self.k2: 
+                        break
                     if d > 0 \
                     and d < self.maxdist \
-                    and len(self.edge_dicts[r_index][id]) < self.k2 \
                     and self.is_collision_free_edge(q, self.node_id_q_dicts[r_index][id2], r_id):
                         self.edge_dicts[r_index][id].append(id2)
             return
@@ -233,6 +237,9 @@ class DecoupledPRM():
     
     # Collision checking
     def is_collision_free_sample(self, sample, r_id):
+        # self collisions
+        if self.robot_self_collision(sample, r_id):
+            return False
         # Check for collisions between the robot and the obstacles
         r_index = self.r_ids.index(r_id)
         self.robot_models[r_index].set_arm_pose(sample)
@@ -253,6 +260,12 @@ class DecoupledPRM():
             if not self.is_collision_free_sample(sample, r_id):
                 return False
         return True
+    
+    def robot_self_collision(self, q, r_id):
+        r_index = self.r_ids.index(r_id)
+        model = self.robot_models[r_index]
+        model.set_arm_pose(q)
+        return self.env.robot_self_collision(model)
     
     def robot_robot_collision(self, q1, q2, r_1_id, r_2_id):
         r_1_index = self.r_ids.index(r_1_id)
