@@ -1,10 +1,9 @@
 from collections import deque
 import os
 import random
-
 import numpy as np
-
 from utils.planner_utils import Interval
+
 if False: 
     new_pose = input("Set arm pose to (or 0 to exit): ")
     new_pose = tuple([float(x) for x in new_pose.split()])

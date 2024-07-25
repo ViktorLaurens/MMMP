@@ -72,7 +72,7 @@ class Environment:
             if other_robot != robot and self.robot_robot_collision(robot, other_robot):
                 print("Robot robot collision")
                 return True, "Robot robot collision"
-        return False, "No collision"
+        return False
 
     # robot robot collision
     def robot_robot_collision(self, robot1, robot2):

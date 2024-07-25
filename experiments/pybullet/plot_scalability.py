@@ -8,11 +8,10 @@ def plot_scatter_data():
     sns.set_theme(style="white")
 
     # specify folder path where data is stored
-    # folder_path = r'C:\Users\vikto\OneDrive - Vrije Universiteit Brussel\VUB\Thesis\Data\scene2'
-    folder_path = os.path.join(os.path.dirname(__file__), '../../res/data/planar/exp3/')
+    folder_path = os.path.join(os.path.dirname(__file__), '../../res/data/pybullet/exp3/')
 
     # x-axis values for plotting: the number of agents in every experiment, 
-    agents_list = [2, 3, 4, 5, 9]  # Number of agents you have data for
+    agents_list = [2, 3, 4, 5]  # Number of agents you have data for
     
     # Load data from data files
     data_cbs = {}
@@ -21,7 +20,7 @@ def plot_scatter_data():
     # Load data for each number of agents from cbs
     for num_agents in agents_list:
         # Determine full path to read data from
-        filename = f'CBSPRM_{num_agents}agents_10tests_200nodesPerAgent.csv'
+        filename = f'CBSPRM_{num_agents}agents_10tests_20nodesPerAgent_v2.csv'
         full_path = folder_path + filename
         # Read data
         if os.path.exists(full_path):
@@ -36,7 +35,7 @@ def plot_scatter_data():
     # Load data for each number of agents from priority
     for num_agents in agents_list:
         # Determine full path to read data from
-        filename = f'PrioritizedPRM_{num_agents}agents_10tests_200nodesPerAgent.csv'
+        filename = f'PrioritizedPRM_{num_agents}agents_10tests_20nodesPerAgent_v2.csv'
         full_path = folder_path + filename
         # Read data
         if os.path.exists(full_path):
@@ -56,7 +55,7 @@ def plot_scatter_data():
 
     # Plotting individual learning times
     # plt.figure(figsize=(5, 5))
-    g = sns.catplot(x="Number of Agents", y="path_length", hue="Algorithm", data=combined_data,
+    g = sns.catplot(x="Number of Agents", y="query_time", hue="Algorithm", data=combined_data,
                     palette=['blue', 'red', 'orange'], height=5, aspect=1)  # 'swarm' to avoid overlapping
     
     # Calculate means and plot them
@@ -64,9 +63,9 @@ def plot_scatter_data():
     # sns.catplot(data=mean_values, x='Number of Agents', y='learning_time', color='red', marker='o')  # Larger markers for mean values
     # plt.scatter(mean_values['Number of Agents'].apply(lambda x: agents_list.index(x)), mean_values['learning_time'], color='red', marker='o', zorder=5)
 
-    g.set_axis_labels("Number of Robots", "Path Length (units)")
+    g.set_axis_labels("Number of Robots", "Query Time (s)")
     g.legend.set_bbox_to_anchor((2, 20))  # (0, 1) refers to the coordinates of the upper left corner of the legend box.
-    # g.set(ylim=(0, 300))  # Set y-axis limit
+    g.set(ylim=(0, 50))  # Set y-axis limit
     g.set_xticklabels(agents_list)  # Ensure custom agent list appears correctly
     plt.tight_layout()  # Adjust layout to not cut off labels
     plt.legend(loc='upper left')  # By location description
@@ -76,7 +75,7 @@ if __name__ == '__main__':
     plot_scatter_data()
     if input('Save plot as EPS? (y/N)') == 'y':
         name = input('Enter filename: ')
-        plt.savefig(os.path.join(os.path.dirname(__file__), f'../../res/plots/planar/exp3/{name}.eps'), format='eps', dpi=300)
+        plt.savefig(os.path.join(os.path.dirname(__file__), f'../../res/plots/pybullet/exp3/{name}.eps'), format='eps', dpi=300)
     else:
         print('Plot not saved.')
     plt.close()

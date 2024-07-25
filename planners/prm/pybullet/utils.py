@@ -16,6 +16,8 @@ class Node:
         self.q = tuple([round(c, 2) for c in q])
     def __eq__(self, other):
         return self.id == other.id
+    def __lt__(self, other):
+        return self.id < other.id
     def __hash__(self):
         return hash(str(self.id) + str(self.q))
     def __str__(self):

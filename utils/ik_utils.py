@@ -22,8 +22,15 @@ def calculate_ik(robotId, eeIndex, targetPose):
     targetPosition, targetOrientation = targetPose
     return p.calculateInverseKinematics(robotId, eeIndex, targetPosition, targetOrientation)
 
-def calculate_arm_ik(robotId, eeIndex, targetPose): 
-    return calculate_ik(robotId, eeIndex, targetPose)[:-2]
+def calculate_closest_ik(robotId, eeIndex, targetPose, initialJointPositions):
+    targetPosition, targetOrientation = targetPose
+    return p.calculateInverseKinematics(robotId, eeIndex, targetPosition, targetOrientation, restPoses=initialJointPositions)
+
+# def calculate_arm_ik(robotId, eeIndex, targetPose): 
+#     return calculate_ik(robotId, eeIndex, targetPose)[:-2]
+
+# def calculate_closest_arm_ik(robotId, eeIndex, targetPose, initialJointPositions):  
+#     return calculate_closest_ik(robotId, eeIndex, targetPose, initialJointPositions)[:-2]
 # ---------------------
 
 # ---------------------

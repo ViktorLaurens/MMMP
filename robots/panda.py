@@ -2,10 +2,11 @@ import os
 
 import numpy as np 
 from robots.robot import Robot
-from utils.ik_utils import IK_info, get_ik_joints
+from utils.ik_utils import IK_info, calculate_ik, calculate_closest_ik
 from utils.pb_conf_utils import wait_for_duration
 from utils.pb_joint_utils import set_joint_positions, get_movable_joints
 from utils.pb_link_utils import link_from_name
+from scipy.spatial.transform import Rotation as R
 
 class Panda(Robot):
     FRANKA_URDF = os.path.join(os.path.dirname(__file__), "../models/franka_panda/urdf/panda_arm_hand.urdf")
@@ -14,6 +15,7 @@ class Panda(Robot):
     def __init__(self, fixed_base=True, base_position=(0, 0, 0), base_orientation=(0, 0, 0, 1), scale=1.0):
         super().__init__(Panda.FRANKA_URDF, fixed_base, base_position, base_orientation, scale)
         self.tool_link = link_from_name(self.r_id, 'panda_hand')
+        print(f"Tool link: {self.tool_link}")
         self.joints = get_movable_joints(self.r_id)
         self.arm_joints = self.get_arm_joints()
         self.gripper_joints = self.get_gripper_joints()
@@ -93,27 +95,50 @@ class Panda(Robot):
     # FORWARD KINEMATICS
     def homogeneous_transform(self, a, d, alpha, theta):
         """ Compute the Denavit-Hartenberg transformation matrix """
+        ct = np.cos(theta)
+        st = np.sin(theta)
+        ca = np.cos(alpha)
+        sa = np.sin(alpha)
         return np.array([
-            [np.cos(theta), -np.sin(theta)*np.cos(alpha), np.sin(theta)*np.sin(alpha), a*np.cos(theta)],
-            [np.sin(theta), np.cos(theta)*np.cos(alpha), -np.cos(theta)*np.sin(alpha), a*np.sin(theta)],
-            [0, np.sin(alpha), np.cos(alpha), d],
+            [ct, -st*ca, st*sa, a*ct],
+            [st, ct*ca, -ct*sa, a*st],
+            [0, sa, ca, d],
+            [0, 0, 0, 1]
+        ])
+    
+    def modified_homogeneous_transform(self, a, d, alpha, theta):
+        """ Compute the modified Denavit-Hartenberg transformation matrix """
+        ct = np.cos(theta)
+        st = np.sin(theta)
+        ca = np.cos(alpha)
+        sa = np.sin(alpha)
+        return np.array([
+            [ct, -st, 0, a],
+            [st*ca, ct*ca, -sa, -sa*d],
+            [st*sa, ct*sa, ca, ca*d],
             [0, 0, 0, 1]
         ])
     
     def forward_kinematics(self, q):
         """ Compute the forward kinematics of the panda robot"""
+        # Initialize the transformation matrix with base position and orientation
+        base_rot = R.from_quat(self.base_orientation).as_matrix()
+        T_base = np.eye(4)
+        T_base[:3, :3] = base_rot
+        T_base[:3, 3] = self.base_position
+
         # Initialize the transformation matrix
-        T = np.eye(4)
+        T = T_base
 
         # Compute the transformation matrix for each joint
         for i, params in enumerate(self.dh_params):
             if i == 7: 
                 # Calculate the position and orientation of the actual end effector (called flange in franka panda documentation) 
                 # which is only a translation with parameter d
-                T_i = self.homogeneous_transform(params["a"], params["d"], params["alpha"], params["theta"])
+                T_i = self.modified_homogeneous_transform(params["a"], params["d"], params["alpha"], params["theta"])
             elif i < 7:
-                T_i = self.homogeneous_transform(params["a"], params["d"], params["alpha"], q[i])
-            T = np.dot(T, T_i)
+                T_i = self.modified_homogeneous_transform(params["a"], params["d"], params["alpha"], q[i])
+            T = np.matmul(T, T_i)
         return T
     
     def position_from_fk(self, q):
@@ -126,16 +151,22 @@ class Panda(Robot):
         #  Initialize the positions list
         positions = []
 
+        # Initialize the transformation matrix with base position and orientation
+        base_rot = R.from_quat(self.base_orientation).as_matrix()
+        T_base = np.eye(4)
+        T_base[:3, :3] = base_rot
+        T_base[:3, 3] = self.base_position
+
         # Initialize the transformation matrix
-        T = np.eye(4)
+        T = T_base
 
         #  Compute positions of frames using forward kinematics
         for i, params in enumerate(self.dh_params):
             if i == 7:
-                T_i = self.homogeneous_transform(params["a"], params["d"], params["alpha"], params["theta"])
+                T_i = self.modified_homogeneous_transform(params["a"], params["d"], params["alpha"], params["theta"])
             elif i < 7:
-                T_i = self.homogeneous_transform(params["a"], params["d"], params["alpha"], q[i])
-            T = np.dot(T, T_i)
+                T_i = self.modified_homogeneous_transform(params["a"], params["d"], params["alpha"], q[i])
+            T = np.matmul(T, T_i)
             positions.append(T[:3, 3])
         return positions
     
@@ -144,10 +175,40 @@ class Panda(Robot):
         T = self.forward_kinematics(q)
         return T[:3, :3]
     
-    #  DISTANCE METRICS
+    def rotation_matrix_to_quaternion(self, R):    
+        """ Convert a rotation matrix to a quaternion """
+        # Compute the eigenvalues and eigenvectors of rotation matrix
+        eigvals, eigvecs = np.linalg.eig(R)
+        # Extract the eigenvector corresponding to the eigenvalue of 1, this is the axis of rotation
+        axis = eigvecs[:, np.isclose(eigvals, 1)]
+        # Check if there is exactly one eigenvector with eigenvalue 1
+        if axis.shape[1] != 1:
+            raise ValueError("The rotation matrix does not have a unique axis of rotation")
+        axis = axis[:, 0]  # Flatten the axis vector
+        # The eigenvector is normalized to get the unit vector
+        axis /= np.linalg.norm(axis)
+        # Compute the angle of rotation from the trace of the rotation matrix (which is invariant under change of basis)
+        angle = np.arccos((np.trace(R) - 1) / 2)
+        # Compute the quaternion from the axis and angle of rotation
+        q = np.concatenate([np.sin(angle / 2) * axis, [np.cos(angle / 2)]])
+        return q
+    
+    def quaternion_from_fk(self, q):
+        """ Extract the orientation from the forward kinematics"""
+        R = self.orientation_from_fk(q)
+        return self.rotation_matrix_to_quaternion(R)
+    
+    # INVERSE KINEMATICS
+    def solve_arm_ik(self, targetPose): 
+        return calculate_ik(self.r_id, self.tool_link, targetPose)[:-2]
+    
+    def solve_closest_arm_ik(self, targetPose, initialJointPositions):
+        return calculate_closest_ik(self.r_id, self.tool_link, targetPose, initialJointPositions)[:-2]
+    
+    # DISTANCE METRICS
     def distance_metric(self, q1, q2):
         """ Compute the specific distance metric for the panda robot."""
-        return self.euclidean_distance_metric(q1, q2)
+        return self.task_space_position_distance(q1, q2)
     
     def angular_distance_metric(self, q1, q2):
         """ Compute the angular distance metric for the panda robot using forward kinematics."""
@@ -164,4 +225,37 @@ class Panda(Robot):
         positions_q1 = self.positions_from_fk(q1)
         positions_q2 = self.positions_from_fk(q2) 
         return np.linalg.norm(np.array(positions_q1) - np.array(positions_q2))
+    
+    # task space distance metrics
+    def task_space_pose_distance(self, q1, q2): 
+        # Weights can be chosen to weigh out the relative importance of the distance in position and orientation
+        w = 1
+        return w * self.task_space_position_distance(q1, q2) + (1-w) * self.task_space_orientation_distance(q1, q2)
+
+    def task_space_position_distance(self, q1, q2): 
+        pos1 = np.array(self.position_from_fk(q1))
+        pos2 = np.array(self.position_from_fk(q2))
+        return np.linalg.norm(pos1 - pos2)
+
+    def task_space_orientation_distance(self, q1, q2): 
+        # Compute geodesic distance between two orientations
+        option = 1
+        if option == 1: 
+            # Compute geodesic distance from orientation matrices
+            R1 = np.array(self.orientation_from_fk(q1))
+            R2 = np.array(self.orientation_from_fk(q2))
+            R = np.dot(R1.T, R2)
+            trace = np.trace(R)
+            trace = min(3, max(-1, trace))
+            return np.arccos((trace - 1) / 2)
+        elif option == 2: 
+            # Compute geodesic distance from quaternions
+            R1 = np.array(self.orientation_from_fk(q1))
+            R2 = np.array(self.orientation_from_fk(q2))
+            q1 = self.rotation_matrix_to_quaternion(R1)
+            q2 = self.rotation_matrix_to_quaternion(R2)
+            return
+        
+    
+
     

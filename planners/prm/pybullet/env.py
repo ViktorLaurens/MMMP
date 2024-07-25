@@ -20,7 +20,9 @@ class Environment:
         for i, agent in enumerate(agents):
             this_model = self.robot_models[i]
             this_model.set_arm_pose(agent["start"])
-            # check for collisions
+        # check for collision
+        for i, agent in enumerate(agents):
+            this_model = self.robot_models[i]
             if self.robot_collision(this_model):
                 raise ValueError(f"Agent {agent['name']} start configuration is in collision.")
             
@@ -38,7 +40,7 @@ class Environment:
                 return True
         return False
 
-    def robot_obstacle_collision(self, robot, obstacle, collision_threshold=0.01):
+    def robot_obstacle_collision(self, robot, obstacle, collision_threshold=0.0):
         """
         Check for collision between the robot and the obstacle using a specified threshold.
 
@@ -57,14 +59,14 @@ class Environment:
             return True
         return False
     
-    def robot_robot_collision(self, robot1, robot2, collision_threshold=0.01):
+    def robot_robot_collision(self, robot1, robot2, collision_threshold=0.0):
         # Check for collision between the two robots
         closest_points = p.getClosestPoints(bodyA=robot1.r_id, bodyB=robot2.r_id, distance=collision_threshold)
         if closest_points:
             return True
         return 
     
-    def robot_self_collision(self, robot, collision_threshold=0.01):
+    def robot_self_collision(self, robot, collision_threshold=0.0):
         # check for collision of non-adjacent links
         for i in range(robot.arm_dimension-2):
             for j in range(i+2, robot.arm_dimension):
@@ -77,12 +79,14 @@ class Environment:
         # Get the maximum time index across all paths
         times = {r_id: max(path.keys()) for r_id, path in paths.items()}
         max_t = max(times.values())
-        time_step = np.round(sorted(paths[0].keys())[1] - sorted(paths[0].keys())[0], 1)  
+        time_step = np.round(sorted(paths[list(paths.keys())[0]].keys())[1] - sorted(paths[list(paths.keys())[0]].keys())[0], 1)
         for t in np.arange(0, max_t + time_step, time_step):
             for r_id, path in paths.items():
+                r_index = [i for i, agent in enumerate(self.agents) if agent["model"].r_id == r_id][0]
                 closest_key = min(path.keys(), key=lambda x: abs(x - t))
-                self.robot_models[r_id].set_arm_pose(path[closest_key])
+                self.robot_models[r_index].set_arm_pose(path[closest_key])
             wait_for_duration(time_step)
+        return
 
     def execute_joint_motion_capturing_frames(self, paths):
         # Get the maximum time index across all paths

@@ -52,8 +52,9 @@ class HighLevelNode:
         return self.cost < other.cost
 
 class CBSPRM(DecoupledPRM):
-    def __init__(self, environment, maxdist, k1=20, k2=10, build_type='kdtree', n=100, t=10, time_step=0.1, local_step=0.05) -> None:
-        super().__init__(environment, maxdist, k1, k2, build_type, n, t, time_step, local_step)
+    def __init__(self, environment, maxdist, k1=0, k2=0, build_type='n', prm_type='degree', n=0, t=0, time_step=0., local_step=0.) -> None:
+        super().__init__(environment, maxdist, k1, k2, build_type, prm_type, n, t, time_step, local_step)
+        self.n_ct_nodes = 0
 
     def transition_valid(self, r_id, d_to_n_1, n_1_id, n_2_id, conflict_times, constraints_from_t):
         r_index = self.r_ids.index(r_id)
@@ -90,7 +91,7 @@ class CBSPRM(DecoupledPRM):
     #  Query methods
     def query(self):
         start = HighLevelNode()
-        # self.n_ct_nodes += 1
+        self.n_ct_nodes += 1
         for r_id in self.r_ids:
             self.add_start_goal_nodes(r_id)
             start.constraint_dict[r_id] = []
@@ -118,7 +119,7 @@ class CBSPRM(DecoupledPRM):
 
             for r_id in first_conflict.r_id1, first_conflict.r_id2:
                 new_node = deepcopy(P)
-                # self.n_ct_nodes += 1
+                self.n_ct_nodes += 1
                 new_node.constraint_dict[r_id].append(constraints_from_conflict[r_id])
                 new_node.solution = self.compute_solution(new_node.constraint_dict)
                 new_node.discretized_solution = {r_id: self.discretize_path_in_time(r_id, new_node.solution[r_id]) for r_id in new_node.solution}
