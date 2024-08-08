@@ -104,6 +104,8 @@ def visualize_sampling():
     # if input("Save halton samples? (y/N): ").lower() == 'y':
     #     save_samples(halton_samples, 'halton_samples.csv')
 
+    return random_samples, grid_samples, halton_samples
+
 def visualize_roadmap(samples, roadmap, color):
     fig, ax = plt.subplots()
     
@@ -123,7 +125,7 @@ def visualize_roadmap(samples, roadmap, color):
 
 def main():
     # Call the visualize sampling function
-    visualize_sampling()
+    _, grid_samples, _ = visualize_sampling()
 
     # Random roadmap construction
     random_samples = load_samples('random_samples.csv')
@@ -141,10 +143,10 @@ def main():
 
     # Grid roadmap construction
     grid_samples = load_samples('grid_samples.csv')
-    # grid_distance_roadmap = construct_distance_roadmap(grid_samples, 0.2)
-    # grid_degree_roadmap = construct_degree_roadmap(grid_samples, 5)
-    grid_distance_roadmap = load_roadmap('grid_distance_roadmap.csv')
-    grid_degree_roadmap = load_roadmap('grid_degree_roadmap.csv')
+    grid_distance_roadmap = construct_distance_roadmap(grid_samples, 0.2)
+    grid_degree_roadmap = construct_degree_roadmap(grid_samples, 5)
+    # grid_distance_roadmap = load_roadmap('grid_distance_roadmap.csv')
+    # grid_degree_roadmap = load_roadmap('grid_degree_roadmap.csv')
     visualize_roadmap(grid_samples, grid_distance_roadmap, 'blue')
     visualize_roadmap(grid_samples, grid_degree_roadmap, 'blue')
     # Save roadmap to file
