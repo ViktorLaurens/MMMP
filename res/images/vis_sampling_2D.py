@@ -115,7 +115,7 @@ def visualize_roadmap(samples, roadmap, color):
     # Plot the edges
     for edge in roadmap:
         point1, point2 = samples[edge[0]], samples[edge[1]]
-        ax.plot([point1[0], point2[0]], [point1[1], point2[1]], 'k-', lw=0.5)
+        ax.plot([point1[0], point2[0]], [point1[1], point2[1]], color=color, lw=0.5)
     
     ax.set_aspect('equal', adjustable='box')
     ax.set_xticks([])
