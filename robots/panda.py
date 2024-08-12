@@ -1,6 +1,7 @@
 import os
 
 import numpy as np 
+import pybullet as p
 from robots.robot import Robot
 from utils.ik_utils import IK_info, calculate_ik, calculate_closest_ik
 from utils.pb_conf_utils import wait_for_duration
@@ -205,10 +206,26 @@ class Panda(Robot):
     def solve_closest_arm_ik(self, targetPose, initialJointPositions):
         return calculate_closest_ik(self.r_id, self.tool_link, targetPose, initialJointPositions)[:-2]
     
+    def solve_ik(self, target_position, target_orientation, default_joint_positions):
+        joint_poses = p.calculateInverseKinematics(
+        self.r_id, 
+        endEffectorLinkIndex=8,  # End effector link index for Panda
+        targetPosition=target_position, 
+        targetOrientation=target_orientation,
+        lowerLimits=[-2.7437, -1.7837, -2.9007, -3.0421, -2.8065, 0.5445, -3.0159],
+        upperLimits=[2.7437, 1.7837, 2.9007, -0.1518, 2.8065, 4.5169, 3.0159],
+        jointRanges=[5.4874, 3.5674, 5.8014, 2.8903, 5.6130, 3.9724, 6.0318],
+        restPoses=default_joint_positions,
+        jointDamping=[1e-3, 1e-3, 1e+4, 1e-3, 1e+4, 1e+0, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6], 
+        maxNumIterations=2000,
+        residualThreshold=1e-4
+        )
+        return joint_poses[:7]
+
     # DISTANCE METRICS
     def distance_metric(self, q1, q2):
         """ Compute the specific distance metric for the panda robot."""
-        return self.task_space_position_distance(q1, q2)
+        return self.task_space_pose_distance(q1, q2)
     
     def angular_distance_metric(self, q1, q2):
         """ Compute the angular distance metric for the panda robot using forward kinematics."""
@@ -228,10 +245,13 @@ class Panda(Robot):
     
     # task space distance metrics
     def task_space_pose_distance(self, q1, q2): 
-        # Weights can be chosen to weigh out the relative importance of the distance in position and orientation
-        w = 1
-        return w * self.task_space_position_distance(q1, q2) + (1-w) * self.task_space_orientation_distance(q1, q2)
-
+        pos1 = self.positions_from_fk(q1)
+        pos2 = self.positions_from_fk(q2)
+        distance = 0
+        for i in range(len(pos1)):
+            distance += np.linalg.norm(pos1[i] - pos2[i])
+        return distance
+    
     def task_space_position_distance(self, q1, q2): 
         pos1 = np.array(self.position_from_fk(q1))
         pos2 = np.array(self.position_from_fk(q2))
