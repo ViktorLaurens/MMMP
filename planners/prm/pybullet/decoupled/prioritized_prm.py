@@ -11,8 +11,8 @@ from planners.prm.pybullet.decoupled.decoupled_prm import DecoupledPRM
 from planners.prm.pybullet.utils import INF
 
 class PrioritizedPRM(DecoupledPRM):
-    def __init__(self, environment, maxdist=0, k1=0, k2=0, build_type='kdtree', prm_type='distance', n=0, t=0., time_step=0., local_step=0.) -> None:
-        super().__init__(environment, maxdist, k1, k2, build_type, prm_type, n, t, time_step, local_step)
+    def __init__(self, environment, load_roadmap, maxdist=0, k1=0, k2=0, build_type='kdtree', prm_type='distance', n=0, t=0., time_step=0., local_step=0.) -> None:
+        super().__init__(environment, load_roadmap, maxdist, k1, k2, build_type, prm_type, n, t, time_step, local_step)
     
     def robot_robot_collision_on_edge(self, current_n_id, neighbor_n_id, r_id, higher_priority_robot_paths, start_time):
         r_index = self.r_ids.index(r_id)

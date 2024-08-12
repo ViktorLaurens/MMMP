@@ -19,10 +19,11 @@ import pybullet as p
 from scipy.spatial import KDTree
 from planners.prm.pybullet.utils import Node
 from robots.panda import Panda
+from utils.pb_data_utils import load_roadmap
 
 
 class DecoupledPRM(): 
-    def __init__(self, environment, maxdist=0, k1=0, k2=0, build_type='n', prm_type='degree', n=0, t=0, time_step=0., local_step=0.) -> None:
+    def __init__(self, environment, load_roadmap=None, maxdist=0, k1=0, k2=0, build_type='n', prm_type='degree', n=0, t=0, time_step=0., local_step=0.) -> None:
         # unpack environmental data
         self.env = environment
         self.agents = environment.agents                
@@ -55,74 +56,77 @@ class DecoupledPRM():
         self.node_q_id_dicts = self.create_node_q_id_dicts(environment.robot_models)   
 
         # Generate roadmaps, i.e. the learning phase
-        self.generate_roadmaps()
-        # update_flag = input('Finetune parameters? (y/N)')
-        # if update_flag.lower() == 'y':
-        #     update_parameters = True
-        # else: 
-        #     update_parameters = False
-        # while update_parameters:
-        #     print(f"\nCurrent parameters: \
-        #         \nprm_type = {self.prm_type} \
-        #         \nmaxdist = {self.maxdist} \
-        #         \nk1 = {self.k1} \
-        #         \nk2 = {self.k2} \
-        #         \nbuild_type = {self.build_type} \
-        #         \nn = {self.n} \
-        #         \navg_degree = {self.compute_combined_avg_degree()}")
-        #     print("\nOptions: \
-        #             \n1 - Change PRM type \
-        #             \n2 - Change maxdist \
-        #             \n3 - Change k1 \
-        #             \n4 - Change k2 \
-        #             \n5 - Change build type \
-        #             \n6 - Change n \
-        #             \n7 - Exit")
-        #     choice = input("Enter number: ")
-        #     if choice=='1':
-        #         new_prm_type = input("Enter new prm_type: ")
-        #         self.prm_type = self.validate_prm_type(new_prm_type)
-        #         self.update_roadmap_edges()
-        #         print(f"Updated prm_type to {new_prm_type}.")
-        #     elif choice=='2':
-        #         new_maxdist = float(input("Enter new maxdist: "))
-        #         self.maxdist = self.validate_positive_float(new_maxdist, 'maxdist')
-        #         self.update_roadmaps_edges()
-        #         print(f"Updated maxdist to {new_maxdist}.")
-        #     elif choice=='3':
-        #         new_k1 = int(input("Enter new k1: "))
-        #         self.k1 = self.validate_positive_integer(new_k1, 'k1')
-        #         self.update_roadmaps_edges()
-        #         print(f"Updated k1 to {new_k1}.")
-        #     elif choice=='4':
-        #         new_k2 = int(input("Enter new k2: "))
-        #         self.k2 = self.validate_positive_integer(new_k2, 'k2')
-        #         self.update_roadmaps_edges()
-        #         print(f"Updated k2 to {new_k2}.")
-        #     elif choice=='5':
-        #         new_build_type = input("Enter new build_type: ")
-        #         self.build_type = self.validate_build_type(new_build_type)
-        #         self.update_roadmaps_edges()
-        #         print(f"Updated build_type to {new_build_type}.")
-        #     elif choice=='6':
-        #         prev_n = self.n
-        #         new_n = int(input("Enter new n: "))
-        #         self.n = self.validate_positive_integer(new_n, 'n')
-        #         if prev_n == new_n:
-        #             print("n is already set to the new value.")
-        #         elif prev_n < new_n:
-        #             n_to_add = new_n - prev_n
-        #             self.add_nodes_and_update_edges(n_to_add)
-        #         elif prev_n > new_n:
-        #             n_to_remove = prev_n - new_n
-        #             self.remove_nodes_and_update_edges(n_to_remove)
-        #         print(f"Updated n to {new_n}.")
-        #     elif choice=='7':
-        #         print("Exiting parameter update...")
-        #         update_parameters = False
-        #     else:
-        #         print("Invalid option, please enter an integer between 1 and 7.")
-        #         continue            
+        if load_roadmap is not None:
+            self.load_roadmaps(load_roadmap)
+        else:
+            self.generate_roadmaps()
+            # update_flag = input('Finetune parameters? (y/N)')
+            # if update_flag.lower() == 'y':
+            #     update_parameters = True
+            # else: 
+            #     update_parameters = False
+            # while update_parameters:
+            #     print(f"\nCurrent parameters: \
+            #         \nprm_type = {self.prm_type} \
+            #         \nmaxdist = {self.maxdist} \
+            #         \nk1 = {self.k1} \
+            #         \nk2 = {self.k2} \
+            #         \nbuild_type = {self.build_type} \
+            #         \nn = {self.n} \
+            #         \navg_degree = {self.compute_combined_avg_degree()}")
+            #     print("\nOptions: \
+            #             \n1 - Change PRM type \
+            #             \n2 - Change maxdist \
+            #             \n3 - Change k1 \
+            #             \n4 - Change k2 \
+            #             \n5 - Change build type \
+            #             \n6 - Change n \
+            #             \n7 - Exit")
+            #     choice = input("Enter number: ")
+            #     if choice=='1':
+            #         new_prm_type = input("Enter new prm_type: ")
+            #         self.prm_type = self.validate_prm_type(new_prm_type)
+            #         self.update_roadmap_edges()
+            #         print(f"Updated prm_type to {new_prm_type}.")
+            #     elif choice=='2':
+            #         new_maxdist = float(input("Enter new maxdist: "))
+            #         self.maxdist = self.validate_positive_float(new_maxdist, 'maxdist')
+            #         self.update_roadmaps_edges()
+            #         print(f"Updated maxdist to {new_maxdist}.")
+            #     elif choice=='3':
+            #         new_k1 = int(input("Enter new k1: "))
+            #         self.k1 = self.validate_positive_integer(new_k1, 'k1')
+            #         self.update_roadmaps_edges()
+            #         print(f"Updated k1 to {new_k1}.")
+            #     elif choice=='4':
+            #         new_k2 = int(input("Enter new k2: "))
+            #         self.k2 = self.validate_positive_integer(new_k2, 'k2')
+            #         self.update_roadmaps_edges()
+            #         print(f"Updated k2 to {new_k2}.")
+            #     elif choice=='5':
+            #         new_build_type = input("Enter new build_type: ")
+            #         self.build_type = self.validate_build_type(new_build_type)
+            #         self.update_roadmaps_edges()
+            #         print(f"Updated build_type to {new_build_type}.")
+            #     elif choice=='6':
+            #         prev_n = self.n
+            #         new_n = int(input("Enter new n: "))
+            #         self.n = self.validate_positive_integer(new_n, 'n')
+            #         if prev_n == new_n:
+            #             print("n is already set to the new value.")
+            #         elif prev_n < new_n:
+            #             n_to_add = new_n - prev_n
+            #             self.add_nodes_and_update_edges(n_to_add)
+            #         elif prev_n > new_n:
+            #             n_to_remove = prev_n - new_n
+            #             self.remove_nodes_and_update_edges(n_to_remove)
+            #         print(f"Updated n to {new_n}.")
+            #     elif choice=='7':
+            #         print("Exiting parameter update...")
+            #         update_parameters = False
+            #     else:
+            #         print("Invalid option, please enter an integer between 1 and 7.")
+            #         continue            
 
     #  Initialization methods
     def create_c_spaces(self, robot_models):
@@ -201,6 +205,24 @@ class DecoupledPRM():
         return {tuple(node.q): node.id for node in nodes}
     
     # learning methods
+    def load_roadmaps(self, roadmap_file):
+        for r_id in self.r_ids:
+            r_index = self.r_ids.index(r_id)
+            roadmap = load_roadmap(roadmap_file)
+            for i, q in enumerate(roadmap.keys()): 
+                node = Node(i, np.round(np.array(q), 2))
+                self.node_lists[r_index].append(node)
+                self.edge_dicts[r_index].update({node.id: []})
+            self.node_id_q_dicts[r_index] = self.generate_node_id_q_dict(self.node_lists[r_index])
+            self.node_q_id_dicts[r_index] = self.generate_node_q_id_dict(self.node_lists[r_index])
+            for i, q in enumerate(roadmap.keys()): 
+                neighbors = roadmap[q]
+                for q in neighbors: 
+                    q = np.round(np.array(q), 2)
+                    n_id = self.node_q_id_dicts[r_index][tuple(q)]
+                    self.edge_dicts[r_index][i].append(n_id)
+        return
+
     def generate_roadmaps(self):
         for r_id in self.r_ids:
             self.generate_roadmap(r_id)
@@ -885,7 +907,32 @@ class DecoupledPRM():
     
     def query_robot(self, r_id): 
         raise NotImplementedError("Query method not implemented.")
-    
+
+    def connect_extra_nodes_degree(self, r_id, nodes):
+        r_index = self.r_ids.index(r_id)
+        # Connect nodes with k2 nearest neighbors, constructing the roadmap
+        for node in nodes:
+            # Determine k1 candidate neighbors
+            candidate_neighbors = []
+            for other_node in self.node_lists[r_index]:
+                if node == other_node:
+                    continue
+                dist = self.distance(r_id, node.q, other_node.q)
+                heapq.heappush(candidate_neighbors, (-dist, other_node))
+                if len(candidate_neighbors) > self.k1:
+                    heapq.heappop(candidate_neighbors)
+            candidate_neighbors = [(-dist, node) for dist, node in candidate_neighbors] # make dists > 0 again
+            candidate_neighbors = self.heapsort(candidate_neighbors)
+            # Connect the k2 nearest neighbors, that can be connected with collision free edges
+            for _, neighbor in candidate_neighbors: # make sure the node itself is excluded
+                if len(self.edge_dicts[r_index][node.id]) == self.k2:
+                    break
+                if self.is_collision_free_edge(node.q, neighbor.q, r_id) \
+                    and not neighbor.id in self.edge_dicts[r_index][node.id]: 
+                    self.edge_dicts[r_index][node.id].append(neighbor.id)
+                    self.edge_dicts[r_index][neighbor.id].append(node.id)
+        return
+
     def add_start_goal_nodes(self, r_id):
         r_index = self.r_ids.index(r_id)
         start_config = self.agents[r_index]['start']
@@ -908,7 +955,7 @@ class DecoupledPRM():
             if len(candidate_neighbors) > self.k1:
                 heapq.heappop(candidate_neighbors)
         candidate_neighbors = [(-dist, node) for dist, node in candidate_neighbors] # make dists >0 again
-        candidate_neighbors.reverse() # reverse heap which is ordered from furthest to closest
+        candidate_neighbors = self.heapsort(candidate_neighbors)
         # Connect the k2 nearest neighbors, that can be connected with collision free edges
         for _, neighbor in candidate_neighbors: # make sure the node itself is excluded
             if len(self.edge_dicts[r_index][-1]) == self.k2:
@@ -929,7 +976,7 @@ class DecoupledPRM():
             if len(candidate_neighbors) > self.k1:
                 heapq.heappop(candidate_neighbors)
         candidate_neighbors = [(-dist, node) for dist, node in candidate_neighbors] # make dists >0 again
-        candidate_neighbors.reverse() # reverse heap which is ordered from furthest to closest
+        candidate_neighbors = self.heapsort(candidate_neighbors)
         # Connect the k2 nearest neighbors, that can be connected with collision free edges
         for _, neighbor in candidate_neighbors: # make sure the node itself is excluded
             if len(self.edge_dicts[r_index][-2]) == self.k2:
@@ -939,6 +986,87 @@ class DecoupledPRM():
                 self.edge_dicts[r_index][neighbor.id].append(-2) # needed for search
         self.node_id_q_dicts[r_index].update({-2: tuple(goal_config)})
         self.node_q_id_dicts[r_index].update({tuple(goal_config): -2})
+
+        # # Sample and connect extra nodes for start q
+        # start_pos = self.robot_models[r_index].position_from_fk(start_config)
+        # goal_pos = self.robot_models[r_index].position_from_fk(goal_config)
+        # n = 10
+
+        # # Take n IK samples around start q
+        # extra_start_poses = []
+        # while len(extra_start_poses) < n:
+        #     extra_pos = self.sample_around_task_space_position(start_pos, 0.1)
+        #     extra_ori = p.getQuaternionFromEuler([np.radians(180), 0, 0])
+        #     extra_q = np.round(np.array(self.robot_models[r_index].solve_ik(extra_pos, extra_ori, start_config)), 2)
+        #     if self.is_collision_free_sample(extra_q, r_id):
+        #         extra_start_poses.append(extra_q)
+
+        # # Take n IK samples around goal q
+        # extra_goal_poses = []
+        # while len(extra_goal_poses) < n:
+        #     extra_pos = self.sample_around_task_space_position(goal_pos, 0.1)
+        #     extra_ori = p.getQuaternionFromEuler([np.radians(180), 0, 0])
+        #     extra_q = np.round(np.array(self.robot_models[r_index].solve_ik(extra_pos, extra_ori, goal_config)), 2)
+        #     if self.is_collision_free_sample(extra_q, r_id):
+        #         extra_goal_poses.append(extra_q)
+
+        # # Determine nodes in roadmap to connect them to
+        # nn_start = {}
+        # for pose in extra_start_poses:
+        #     new_node_id = int(len(self.node_lists[r_index]) + len(nn_start.keys()))
+        #     self.node_id_q_dicts[r_index].update({new_node_id: tuple(pose)})
+        #     self.node_q_id_dicts[r_index].update({tuple(pose): new_node_id})
+        #     nn_start.update({new_node_id: []})
+        #     for node in self.node_lists[r_index]:
+        #         if node.id == -1:
+        #             continue
+        #         dist = self.distance(r_id, pose, node.q)
+        #         heapq.heappush(nn_start[new_node_id], (-dist, node))
+        #         if len(nn_start[new_node_id]) > self.k1:
+        #             heapq.heappop(nn_start[new_node_id])
+        #     nn_start[new_node_id] = [(-dist, node) for dist, node in nn_start[new_node_id]]
+        #     nn_start[new_node_id] = self.heapsort(nn_start[new_node_id])
+
+        # nn_goal = {}
+        # for pose in extra_goal_poses:
+        #     new_node_id = int(len(self.node_lists[r_index]) + len(nn_start.keys()) + len(nn_goal.keys()))
+        #     self.node_id_q_dicts[r_index].update({new_node_id: tuple(pose)})
+        #     self.node_q_id_dicts[r_index].update({tuple(pose): new_node_id})
+        #     nn_goal.update({new_node_id: []})
+        #     for node in self.node_lists[r_index]:
+        #         if node.id == -2:
+        #             continue
+        #         dist = self.distance(r_id, pose, node.q)
+        #         heapq.heappush(nn_goal[new_node_id], (-dist, node))
+        #         if len(nn_goal[new_node_id]) > self.k1:
+        #             heapq.heappop(nn_goal[new_node_id])
+        #     nn_goal[new_node_id] = [(-dist, node) for dist, node in nn_goal[new_node_id]]
+        #     nn_goal[new_node_id] = self.heapsort(nn_goal[new_node_id])
+
+        # # Connect the nodes
+        # for n_id, neighbors in nn_start.items():
+        #     new_node = Node(n_id, np.array(self.node_id_q_dicts[r_index][n_id]))
+        #     self.node_lists[r_index].append(new_node)
+        #     self.edge_dicts[r_index].update({new_node.id: [-1]})
+        #     self.edge_dicts[r_index][-1].append(new_node.id)
+        #     for _, neighbor in neighbors:
+        #         if len(self.edge_dicts[r_index][new_node.id]) == self.k2:
+        #             break
+        #         if self.is_collision_free_edge(pose, neighbor.q, r_id):
+        #             self.edge_dicts[r_index][new_node.id].append(neighbor.id)
+        #             self.edge_dicts[r_index][neighbor.id].append(new_node.id)
+        
+        # for n_id, neighbors in nn_goal.items():
+        #     new_node = Node(n_id, np.array(self.node_id_q_dicts[r_index][n_id]))
+        #     self.node_lists[r_index].append(new_node)
+        #     self.edge_dicts[r_index].update({new_node.id: [-2]})
+        #     self.edge_dicts[r_index][-2].append(new_node.id)
+        #     for _, neighbor in neighbors:
+        #         if len(self.edge_dicts[r_index][new_node.id]) == self.k2:
+        #             break
+        #         if self.is_collision_free_edge(pose, neighbor.q, r_id):
+        #             self.edge_dicts[r_index][new_node.id].append(neighbor.id)
+        #             self.edge_dicts[r_index][neighbor.id].append(new_node.id)
         return
     
     def delete_start_goal_nodes(self, r_id):

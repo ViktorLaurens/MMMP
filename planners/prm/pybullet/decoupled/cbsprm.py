@@ -52,8 +52,8 @@ class HighLevelNode:
         return self.cost < other.cost
 
 class CBSPRM(DecoupledPRM):
-    def __init__(self, environment, maxdist, k1=0, k2=0, build_type='n', prm_type='degree', n=0, t=0, time_step=0., local_step=0.) -> None:
-        super().__init__(environment, maxdist, k1, k2, build_type, prm_type, n, t, time_step, local_step)
+    def __init__(self, environment, load_roadmap, maxdist, k1=0, k2=0, build_type='n', prm_type='degree', n=0, t=0, time_step=0., local_step=0.) -> None:
+        super().__init__(environment, load_roadmap, maxdist, k1, k2, build_type, prm_type, n, t, time_step, local_step)
         self.n_ct_nodes = 0
 
     def transition_valid(self, r_id, d_to_n_1, n_1_id, n_2_id, conflict_times, constraints_from_t):
@@ -113,7 +113,9 @@ class CBSPRM(DecoupledPRM):
             
             if first_conflict is None:
                 print("Solution found")
-                return P.discretized_solution
+                # for r_id in self.r_ids:
+                #     self.delete_start_goal_nodes(r_id)
+                return P.solution
             
             constraints_from_conflict = self.get_constraints_from_conflict(first_conflict)
 
