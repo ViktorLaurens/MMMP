@@ -35,11 +35,11 @@ This repository is developed as part of a final dissertation to obtain the Maste
 ## Usage
 1. **Run the main script**:
     ```bash
-    python main.py
+    python -m main
     ```
 
-2. **Examples**:
-    - Describe any example usage or command-line arguments.
+<!-- 2. **Examples**:
+    - Describe any example usage or command-line arguments. -->
 
 <!-- ## Features
 - Conflict-Based Search (CBS) for multi-manipulator planning.
