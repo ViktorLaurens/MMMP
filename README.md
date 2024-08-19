@@ -52,9 +52,7 @@ This repository is developed as part of a final dissertation to obtain the Maste
 
 ## Project Structure
     MMMP/
-    ├── config/                 # Configuration files for various parts of your project.
-    ├── docs/                   # Documentation regarding the project. 
-    ├── examples/               # various examples to demonstrate the project's capabilities.
+    ├── experiments/            # various examples to demonstrate the project's capabilities.
     ├── models/                 # Geometric models for robot classes. 
     ├── planners/               # Path and motion planning algorithms. 
     ├── res/                    # Resources such as data files, images, and videos.
@@ -65,6 +63,7 @@ This repository is developed as part of a final dissertation to obtain the Maste
     ├── .gitignore
     ├── LICENSE
     ├── README.md
+    ├── main.py
     └── requirements.txt
 
 <!-- ### config/
