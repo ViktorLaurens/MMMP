@@ -91,14 +91,21 @@ class CBSPRM(DecoupledPRM):
     #  Query methods
     def query(self):
         start = HighLevelNode()
+        l_t = 0
+        q_t = 0
         self.n_ct_nodes += 1
+        
+        start_t = time.perf_counter()
         for r_id in self.r_ids:
             self.add_start_goal_nodes(r_id)
             start.constraint_dict[r_id] = []
+        l_t = time.perf_counter() - start_t
+
+        start_t = time.perf_counter()
         start.solution = self.compute_solution(start.constraint_dict)
         start.discretized_solution = {r_id: self.discretize_path_in_time(r_id, start.solution[r_id]) for r_id in start.solution}
         if not start.solution:
-            return {}
+            return {}, l_t, 0
         start.cost = self.compute_cost(start.solution)
         
         open_set = {start}
@@ -115,7 +122,8 @@ class CBSPRM(DecoupledPRM):
                 print("Solution found")
                 # for r_id in self.r_ids:
                 #     self.delete_start_goal_nodes(r_id)
-                return P.solution
+                q_t = time.perf_counter() - start_t
+                return P.solution, l_t, q_t
             
             constraints_from_conflict = self.get_constraints_from_conflict(first_conflict)
 
@@ -131,7 +139,8 @@ class CBSPRM(DecoupledPRM):
 
                 if new_node not in closed_set:
                     open_set |= {new_node}
-        return {}
+        q_t = time.perf_counter() - start_t
+        return {}, l_t, q_t
 
     def compute_solution(self, constraint_dict):
         solution = {}

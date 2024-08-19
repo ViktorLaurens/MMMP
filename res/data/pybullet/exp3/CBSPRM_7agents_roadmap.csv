@@ -1,0 +1,2 @@
+learning_time,query_time,n_nodes,n_edges,avg_degree,max_edge_len,success,path_length,n_ct_nodes
+62.501554,628.1421403,5362,17976.0,6.704960835509138,0.1,1,2.7520250350985886,113

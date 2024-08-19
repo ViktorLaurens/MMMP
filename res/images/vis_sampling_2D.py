@@ -70,22 +70,22 @@ def visualize_sampling():
     fig, ax = plt.subplots()
     
     # Number of nodes to plot per method
-    n = 50
+    n = 1
     point_size = 10  # Size of the points
 
     # Uniform random sampling
-    # random_samples = generate_random_samples(n)
-    random_samples = load_samples('random_samples.csv')
-    ax.scatter(random_samples[:, 0], random_samples[:, 1], color='red', s=point_size, label='Uniform Random')
+    random_samples = generate_random_samples(n)
+    # random_samples = load_samples('random_samples.csv')
+    # ax.scatter(random_samples[:, 0], random_samples[:, 1], color='red', s=point_size, label='Uniform Random')
 
     # Grid sampling with Gaussian noise
-    # grid_samples = generate_grid_samples(n)
-    grid_samples = load_samples('grid_samples.csv')
-    ax.scatter(grid_samples[:, 0], grid_samples[:, 1], color='blue', s=point_size, label='Grid with Gaussian Noise')
+    grid_samples = generate_grid_samples(n)
+    # grid_samples = load_samples('grid_samples.csv')
+    # ax.scatter(grid_samples[:, 0], grid_samples[:, 1], color='blue', s=point_size, label='Grid with Gaussian Noise')
 
     # Halton sequence sampling (2, 3 dimensions)
-    # halton_samples = generate_halton_samples(n)
-    halton_samples = load_samples('halton_samples.csv')
+    halton_samples = generate_halton_samples(n)
+    # halton_samples = load_samples('halton_samples.csv')
     ax.scatter(halton_samples[:, 0], halton_samples[:, 1], color='green', s=point_size, label='Halton Sequence (2, 3)')
 
     # Plot settings
@@ -170,4 +170,5 @@ def main():
     #     save_roadmap(halton_degree_roadmap, 'halton_degree_roadmap.csv')
 
 if __name__ == '__main__':
-    main()
+    # main()
+    visualize_sampling()

@@ -54,14 +54,20 @@ class PrioritizedPRM(DecoupledPRM):
             priorities = [i for i in range(1, len(self.r_ids)+1)]
         assert len(priorities) == len(self.r_ids), "Number of priorities should match the number of robots."
         paths = {}
+        st_paths = {}
+        total_l_t = 0
+        total_q_t = 0
         order = np.argsort(priorities)[::-1]
         for priority_index in order:
             r_id = self.r_ids[priority_index]
-            st_path = self.query_robot(r_id, higher_priority_robot_paths=paths)
+            id_path, st_path, l_t, q_t = self.query_robot(r_id, higher_priority_robot_paths=st_paths)
             if not st_path:
                 return {}
-            paths.update({r_id: st_path})
-        return paths
+            paths.update({r_id: id_path})
+            st_paths.update({r_id: st_path})
+            total_l_t += l_t
+            total_q_t += q_t
+        return paths, total_l_t, total_q_t
     
     def query_robot(self, r_id, higher_priority_robot_paths): 
         r_index = self.r_ids.index(r_id)
@@ -77,7 +83,9 @@ class PrioritizedPRM(DecoupledPRM):
             return path
 
         # add start and goal to the roadmap
+        start_time = time.perf_counter()
         self.add_start_goal_nodes(r_id)
+        l_t = time.perf_counter() - start_time
 
         # Use Dijkstra to find a path between the nearest start and goal nodes
         # dijkstra_start_time = time.perf_counter()
@@ -88,19 +96,19 @@ class PrioritizedPRM(DecoupledPRM):
         # Use A* to find a path between the nearest start and goal nodes
         a_star_start_time = time.perf_counter()
         a_path, a_distance = self.a_star_search(r_id, higher_priority_robot_paths)
-        a_star_duration = time.perf_counter() - a_star_start_time
+        q_t = time.perf_counter() - a_star_start_time
         # print(f"A*: Composite path in {a_star_duration:.6f} seconds with distance {a_distance:.2f}")
 
         # Store the path for the agent
         path = a_path
         if not path:
             print(f"No path found for robot {r_id}.")
-            self.delete_start_goal_nodes(r_id) # Reset roadmap
+            # self.delete_start_goal_nodes(r_id) # Reset roadmap
             return {}
         else: 
             discretized_st_path = self.discretize_path_in_time(r_id, path)
-            self.delete_start_goal_nodes(r_id) # Reset roadmap
-            return discretized_st_path
+            # self.delete_start_goal_nodes(r_id) # Reset roadmap
+            return path, discretized_st_path, l_t, q_t
     
     def a_star_search(self, r_id, higher_priority_robot_paths):
         """Perform A* search using node IDs."""

@@ -10,7 +10,8 @@ from utils.pb_link_utils import link_from_name
 from scipy.spatial.transform import Rotation as R
 
 class Panda(Robot):
-    FRANKA_URDF = os.path.join(os.path.dirname(__file__), "../models/franka_panda/urdf/panda_arm_hand.urdf")
+    # FRANKA_URDF = os.path.join(os.path.dirname(__file__), "../models/franka_panda/urdf/panda_arm_hand.urdf")
+    FRANKA_URDF = "franka_panda/panda.urdf"
     PANDA_INFO = IK_info(base_link='panda_link0', ee_link='panda_link8', free_joints=['panda_joint7'])
     
     def __init__(self, fixed_base=True, base_position=(0, 0, 0), base_orientation=(0, 0, 0, 1), scale=1.0):

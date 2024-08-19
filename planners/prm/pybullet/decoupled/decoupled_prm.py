@@ -829,6 +829,13 @@ class DecoupledPRM():
         model = self.robot_models[index]
         return model.distance_metric(q1, q2)
     
+    def task_space_distance(self, r_id, q1, q2):
+        r_index = self.r_ids.index(r_id)
+        model = self.robot_models[r_index]
+        q1_pos = model.position_from_fk(q1)
+        q2_pos = model.position_from_fk(q2)
+        return np.linalg.norm(q1_pos - q2_pos)
+    
     # Collision checking
     def is_collision_free_sample(self, sample, r_id):
         # self collisions
@@ -1138,17 +1145,29 @@ class DecoupledPRM():
             total_nr_edges += sum([len(neighbors) for neighbors in self.edge_dicts[r_index].values()]) / 2
         return total_nr_edges
 
-    def compute_total_path_length(self, paths):
-        total_length = 0
-        for r_id, path in paths.items():
-            path_length = 0
-            for t, q in path.items():
-                if t == 0:
-                    continue
-                q_prev = path[np.round(t-self.time_step, 1)]
-                path_length += self.distance(r_id, q_prev, q)
-            total_length += path_length
-        return total_length
+    # def compute_total_path_length(self, paths):
+    #     total_length = 0
+    #     for r_id, path in paths.items():
+    #         path_length = 0
+    #         for t, q in path.items():
+    #             if t == 0:
+    #                 continue
+    #             q_prev = path[np.round(t-self.time_step, 1)]
+    #             path_length += self.task_space_distance(r_id, q_prev, q)
+    #         total_length += path_length
+    #     return total_length
+    
+    def compute_total_path_length(self, id_paths):
+            total_length = 0
+            for r_id, path in id_paths.items():
+                path_length = 0
+                q_prev = self.node_id_q_dicts[self.r_ids.index(r_id)][path[0]]
+                for id in path[1:]:
+                    q = self.node_id_q_dicts[self.r_ids.index(r_id)][id]
+                    path_length += self.task_space_distance(r_id, q_prev, q)
+                    q_prev = q
+                total_length += path_length
+            return total_length
     
 
 

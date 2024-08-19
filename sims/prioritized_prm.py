@@ -3,6 +3,8 @@ import imageio
 import numpy as np
 import pybullet as p
 
+from planners.prm.pybullet.decoupled.prioritized_prm import PrioritizedPRM
+
 # Define the path to your project root directory
 project_root = 'C:\\Users\\vikto\\MMMP'
 
@@ -13,7 +15,6 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from planners.prm.pybullet.env import Environment
-from planners.prm.pybullet.decoupled.cbsprm import CBSPRM
 from robots.panda import Panda
 from utils.pb_conf_utils import add_data_path, connect, disconnect, pause_sim, set_camera_pose
 
@@ -21,15 +22,10 @@ def main():
     connect(use_gui=True)
     add_data_path()
     set_camera_pose(camera_point=[0, -1.2, 1.2])
-
-    panda1 = Panda(base_position=(0.7, 0, 0.01), base_orientation=(0, 0, 1, 0))  # Specify base position and orientation for robot1
-    panda2 = Panda(base_position=(-0.7, 0, 0.01), base_orientation=(0, 0, 0, 1))  # Specify base position and orientation for robot2
-
     ground = p.loadURDF("plane.urdf")
 
-    # Disable collision between the robot and the ground plane
-    # p.setCollisionFilterPair(panda1.r_id, ground, -1, -1, enableCollision=0)
-    # p.setCollisionFilterPair(panda2.r_id, ground, -1, -1, enableCollision=0)
+    panda1 = Panda(base_position=(0.9, 0, 0.01), base_orientation=(0, 0, 1, 0))  # Specify base position and orientation for robot1
+    panda2 = Panda(base_position=(-0.9, 0, 0.01), base_orientation=(0, 0, 0, 1))  # Specify base position and orientation for robot2
 
     reference_joint_positions = [0, -np.pi/4, 0, -3*np.pi/4, 0, np.pi/2, np.pi/4]
     # reference_joint_positions = [0, 0, 0, 0, 0, 0, 0]
@@ -37,7 +33,7 @@ def main():
     panda2.set_arm_pose(reference_joint_positions)
 
     # Calculate and set start pose of arm 1
-    tool_position_start1 = (-0.0, -0.4, 0.3)
+    tool_position_start1 = (-0.4, -0.4, 0.5)
     tool_orientation_start1 = p.getQuaternionFromEuler([np.radians(180), 0, 0])
     arm1_start = panda1.solve_ik(tool_position_start1, tool_orientation_start1, reference_joint_positions)
     arm1_start = tuple(round(c, 3) for c in arm1_start)
@@ -53,7 +49,7 @@ def main():
 
 
     # Calculate and set goal pose of arm 1
-    tool_position_goal1 = (-0.0, 0.4, 0.3)
+    tool_position_goal1 = (-0.4, 0.4, 0.5)
     tool_orientation_goal1 = p.getQuaternionFromEuler([np.radians(180), 0, 0])
     arm1_goal = panda1.solve_ik(tool_position_goal1, tool_orientation_goal1, arm1_start)
     arm1_goal = tuple(round(c, 3) for c in arm1_goal)
@@ -68,7 +64,7 @@ def main():
 
 
     # Calculate and set start of arm 2
-    tool_position_start2 = (0.0, 0.4, 0.3)
+    tool_position_start2 = (0.4, 0.4, 0.5)
     tool_orientation_start2 = p.getQuaternionFromEuler([np.radians(180), 0, 0])
     arm2_start = panda2.solve_ik(tool_position_start2, tool_orientation_start2, reference_joint_positions)
     arm2_start = tuple(round(c, 3) for c in arm2_start)
@@ -83,7 +79,7 @@ def main():
 
 
     # Calculate and set goal of arm 2
-    tool_position_goal2 = (0.0, -0.4, 0.3)
+    tool_position_goal2 = (0.4, -0.4, 0.5)
     tool_orientation_goal2 = p.getQuaternionFromEuler([np.radians(180), 0, 0])
     arm2_goal = panda2.solve_ik(tool_position_goal2, tool_orientation_goal2, arm2_start)
     arm2_goal = tuple(round(c, 3) for c in arm2_goal)
@@ -112,7 +108,7 @@ def main():
     directory = os.path.dirname(__file__)  # Get the directory of the current file
     relative_path = '../res/images/task_space_roadmap2_adjusted_pruned.csv'
     filename = os.path.join(directory, relative_path)
-    prm = CBSPRM(env, load_roadmap=filename, maxdist=0.1, k1=55, k2=50, build_type='n', prm_type='distance', n=20, t=10, time_step=0.01, local_step=0.02)
+    prm = PrioritizedPRM(env, load_roadmap=filename, maxdist=0.1, k1=11, k2=10, build_type='n', prm_type='distance', n=20, t=10, time_step=0.01, local_step=0.02)
     learn_duration = time.time()-start_time
     print(f"Learning duration: {learn_duration}")
     # print(f"Edges: {prm.edge_dicts}")
@@ -122,7 +118,7 @@ def main():
 
     pause_sim('Query?')
     start_time = time.time()
-    paths, l_t, q_t = prm.query()
+    paths = prm.query()
     query_duration = time.time()-start_time
     if not paths:
         print("Solution not found")

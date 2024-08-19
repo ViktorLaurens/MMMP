@@ -21,13 +21,19 @@ class Environment:
         # Initialize robot positions
         for i, agent in enumerate(agents):
             this_model = self.robot_models[i]
-            this_model.set_arm_pose(agent["start"])
+            this_model.set_arm_pose(agent["goal"])
         # check for collision
         for i, agent in enumerate(agents):
             this_model = self.robot_models[i]
             if self.robot_collision(this_model):
                 raise ValueError(f"Agent {agent['name']} start configuration is in collision.")
-            
+
+    def reset_robots(self):
+        for i, agent in enumerate(self.agents):
+            this_model = self.robot_models[i]
+            this_model.set_arm_pose(agent["start"])
+        return
+    
     def robot_collision(self, robot):
         if self.robot_self_collision(robot):
             print("Robot self collision")
@@ -149,7 +155,9 @@ class Environment:
         t_stop, _ = trajectories[prm.r_ids[0]][-1]
         for t in np.linspace(t_start, t_stop, num=int((t_stop - t_start) / time_step)):
             for r_id in prm.r_ids:
-                joint_positions = self.q_from_interpolated_trajectories(trajectories[r_id], t)                        
+                joint_positions = self.q_from_interpolated_trajectories(trajectories[r_id], t)   
+                if len(joint_positions) != 7:
+                    continue                     
                 p.setJointMotorControlArray(r_id, range(7), p.POSITION_CONTROL, joint_positions)
                 p.stepSimulation()
                 time.sleep(time_step)
@@ -191,7 +199,7 @@ class Environment:
         trajectories = {r_id: calculate_lspb_trajectory(waypoints[r_id], t_final, effort_factor, joint_limits, velocity_limits, acceleration_limits) for r_id in id_paths.keys()}
 
         # Simulation parameters
-        time_step = 1.0 / 30.0
+        time_step = 1.0 /30.0
         p.setTimeStep(time_step)
 
         # Loop through trajectory points
@@ -200,6 +208,8 @@ class Environment:
         for t in np.linspace(t_start, t_stop, num=int((t_stop - t_start) / time_step)):
             for r_id in prm.r_ids:
                 joint_positions = joint_positions_from_trajectories(trajectories[r_id], t)
+                if len(joint_positions) != 7:
+                    continue
                 p.setJointMotorControlArray(r_id, range(7), p.POSITION_CONTROL, joint_positions)
                 p.stepSimulation()
                 time.sleep(time_step)
