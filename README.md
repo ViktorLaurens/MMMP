@@ -11,6 +11,31 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 <!--  -->
 ## Features
 
+This project offers a range of features designed to enhance motion planning for robotic manipulators. Key features include:
+
+### Hybrid Motion Planning Algorithm
+- **Description:** Combines Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM) to optimize collision-free pathfinding for multiple manipulators.
+- **Example Use Case:** Ideal for scenarios where multiple robots are performing pick-and-place tasks in a confined space.
+
+### Flexible Multi-Robot Support
+- **Description:** Supports various robotic configurations and tasks, allowing for easy adaptation to different setups beyond pick-and-place.
+- **Example Use Case:** Can be extended to applications such as collaborative assembly or complex warehouse automation.
+
+### Benchmarking and Comparison Tools
+- **Description:** Includes tools for benchmarking the hybrid approach against traditional methods to evaluate performance and efficiency.
+- **Example Use Case:** Useful for researchers and practitioners who want to compare different motion planning strategies.
+
+### Easy Integration
+- **Description:** Designed to be compatible with existing robotics frameworks and software, facilitating smooth integration into your projects.
+- **Example Use Case:** Seamlessly integrates with ROS (Robot Operating System) and other robotics middleware.
+
+### Customizable Parameters
+- **Description:** Allows for customization of key parameters to fine-tune the motion planning according to specific requirements.
+- **Example Use Case:** Adjust parameters to optimize performance for different types of tasks or operational environments.
+
+![Feature Demo](https://example.com/feature-demo.gif)
+
+
 <!--  -->
 ## Table of Contents
 - [Installation](#installation)
