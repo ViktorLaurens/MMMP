@@ -1,6 +1,7 @@
 # MMMP (Multi-Manipulator Motion Planning)
 This repository is developed as part of a final dissertation to obtain the Master of Science in Electromechanical Engineering with a specialization in Mechatronics and Robotics. The project focuses on sampling-based motion planning of manipulators, particularly combining Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM).
 
+<!--  -->
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
@@ -9,6 +10,7 @@ This repository is developed as part of a final dissertation to obtain the Maste
 - [License](#license)
 - [Contact Information](#contact-information)
 
+<!--  -->
 ## Installation
 1. **Navigate to the desired directory on the local device.**
 
@@ -43,7 +45,7 @@ This repository is developed as part of a final dissertation to obtain the Maste
 - Probabilistic RoadMaps (PRM) integration.
 - Efficient path planning for multiple robotic arms. -->
 
-
+<!--  -->
 ## Project Structure Overview
     MMMP/
     ├── experiments/            # various examples to demonstrate the project's capabilities.
@@ -84,7 +86,7 @@ Contains test scripts.
 ### utils/
 Contains tools and utilities.
 
-
+<!--  -->
 ## Contributing
 We welcome contributions to improve this project. Follow these steps to contribute:
 
@@ -130,12 +132,15 @@ We welcome contributions to improve this project. Follow these steps to contribu
    - Be prepared to make additional changes based on their feedback.
    - Once all feedback is addressed and your changes are approved, your pull request will be merged.
 
+<!--  -->
 ## License
 This project is licensed under the MIT License.
 
+<!--  -->
 ## Contact Information
 - Author: Viktor Laurens De Groote
 - Email: viktor.degroote@gmail.com
 
-<!-- ## Acknowledgements
-- Acknowledge any contributors, libraries, or resources that were helpful. -->
+<!--  -->
+## Acknowledgements
+- Acknowledge any contributors, libraries, or resources that were helpful.
