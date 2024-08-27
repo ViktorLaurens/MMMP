@@ -44,7 +44,7 @@ This repository is developed as part of a final dissertation to obtain the Maste
 - Efficient path planning for multiple robotic arms. -->
 
 
-## Project Structure
+## Project Structure Overview
     MMMP/
     ├── experiments/            # various examples to demonstrate the project's capabilities.
     ├── models/                 # Geometric models for robot classes. 
@@ -60,14 +60,8 @@ This repository is developed as part of a final dissertation to obtain the Maste
     ├── main.py
     └── requirements.txt
 
-### config/
+### experiments/
 Contains configuration files for various parts of your project. 
-
-### docs/
-Contains documentation regarding the project. 
-
-### examples/
-Contains various examples to demonstrate the project's capabilities.
 
 ### models/
 Contains geometric models for robot classes.
@@ -89,6 +83,7 @@ Contains test scripts.
 
 ### utils/
 Contains tools and utilities.
+
 
 ## Contributing
 We welcome contributions to improve this project. Follow these steps to contribute:
