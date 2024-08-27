@@ -10,11 +10,13 @@ This repository is developed as part of a final dissertation to obtain the Maste
 <!--  -->
 ## Table of Contents
 - [Installation](#installation)
-- [Usage](#usage)
 - [Project Structure](#project-structure)
+- [Usage](#usage)
+- [Documentation](#documentation)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact Information](#contact-information)
+- [Acknowledgements](#acknowledgements)
 
 <!--  -->
 ## Installation
