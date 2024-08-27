@@ -42,6 +42,7 @@ This repository is developed as part of a final dissertation to obtain the Maste
 <!--  -->
 ## Project Structure Overview
     MMMP/
+    ├── docs/                   # Research paper for this project.
     ├── experiments/            # various examples to demonstrate the project's capabilities.
     ├── models/                 # Geometric models for robot classes. 
     ├── planners/               # Path and motion planning algorithms. 
@@ -55,6 +56,9 @@ This repository is developed as part of a final dissertation to obtain the Maste
     ├── README.md
     ├── main.py
     └── requirements.txt
+
+### docs/ 
+Contains the research paper explaining the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved. See the [Documentation](#documentation) section. 
 
 ### experiments/
 Contains configuration files for various parts of your project. 
