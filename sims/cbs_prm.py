@@ -135,18 +135,20 @@ def main():
     panda2.set_arm_pose(arm2_start)
 
     frames = None
-    # pause_sim('execute joint motion?')
-    # frames = env.execute_joint_motion_capturing_frames(paths)
-    # frames = env.execute_joint_motion(paths)
-    pause_sim('execute interpolated motion?')
-    panda1.set_arm_pose(arm1_start)
-    panda2.set_arm_pose(arm2_start)
-    env.execute_interpolated_motion(prm, paths, t_final=5.0)
+    # # pause_sim('execute joint motion?')
+    # # frames = env.execute_joint_motion_capturing_frames(paths)
+    # # frames = env.execute_joint_motion(paths)
+    # pause_sim('execute interpolated motion?')
+    # panda1.set_arm_pose(arm1_start)
+    # panda2.set_arm_pose(arm2_start)
+    # # env.execute_interpolated_motion(prm, paths, t_final=5.0)
+    # frames, _ = env.execute_interpolated_motion_capturing_frames(prm, paths, t_final=5.0)
     
     pause_sim('execute smooth motion?')
     panda1.set_arm_pose(arm1_start)
     panda2.set_arm_pose(arm2_start)
-    env.execute_smooth_motion(prm, paths, t_final=5.0, effort_factor=0.8)
+    # env.execute_smooth_motion(prm, paths, t_final=5.0, effort_factor=0.8)
+    frames, _ = env.execute_smooth_motion_capturing_frames(prm, paths, t_final=5.0, effort_factor=0.8)
     pause_sim('Disconnect?')
     disconnect()
 
@@ -155,14 +157,23 @@ def main():
         if flag.lower() == 'y':
             # Define where to save the video
             now = time.strftime("%Y%m%d_%H%M%S")
-            directory = r'C:\Users\vikto\OneDrive - Vrije Universiteit Brussel\VUB\Thesis\Videos'
-            filename = f'\simulation_{len(agents)}pandas_{panda1.base_position}_{now}.mp4'
+            directory = os.path.join(os.path.dirname(__file__), '..', 'res', 'videos')
+            filename = f'\CBSPRM_{len(agents)}pandas_{now}.mp4'
 
             # Save the captured frames as a video
             imageio.mimsave(directory + filename, frames, fps=30)  # Define the FPS as needed
             print(f"Video saved as {directory + filename}")
         else: 
             print("Video not saved.")
+        
+        if input('Save GIF? (y/N): ').lower() == 'y':
+            # Define where to save the GIF
+            now = time.strftime("%Y%m%d_%H%M%S")
+            directory = os.path.join(os.path.dirname(__file__), '..', 'res', 'gifs')
+            filename = f'\CBSPRM_{len(agents)}pandas_{now}.gif'
+
+            # Save the captured frames as a GIF
+            imageio.mimsave(directory + filename, frames, fps=30)
 
 if __name__ == "__main__":
     main()
