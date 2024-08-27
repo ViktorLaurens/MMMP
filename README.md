@@ -4,13 +4,10 @@ This repository is developed as part of a final dissertation to obtain the Maste
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
-<!-- - [Features](#features) -->
-<!-- - [Configuration](#configuration) -->
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact Information](#contact-information)
-<!-- - [Acknowledgements](#acknowledgements) -->
 
 ## Installation
 1. **Navigate to the desired directory on the local device.**
