@@ -10,9 +10,17 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 
 <!--  -->
 ## Features
-### Hybrid Motion Planning Algorithm
-- **Description:** Combines Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM) to optimize collision-free pathfinding for multiple manipulators.
-- **Example Use Case:** Ideal for scenarios where multiple robots are performing pick-and-place tasks in a confined space.
+### Hybrid motion planning algorithm
+- **Description:** Combines Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM) for collision-free pathfinding for multiple manipulators.
+- **Example Use Case:** Ideal for scenarios where multiple manipulators are performing pick-and-place tasks in a confined space.
+
+![Feature Demo](res/gifs/CBSPRM.gif)
+
+### Coupled & decoupled sampling-based planners
+
+### Trajectory generation
+- **Description:** The path planner computes a collision-free path in joint space consisting of the sequence of linear edges connecting waypoints. To ensure the path is collision-free, the planner assumes the robots move at a constant speed of equal magnitude along their paths. However, these zig-zag motions are impractical for real-world execution. Therefore, a trajectory is generated that respects the kinematic and dynamic constraints of the robots while closely following the original zig-zag paths. The computed trajectory uses Linear Segments with Parabolic Blends (LSPBs) to smoothly transition between waypoints, ensuring that the motion remains collision-free.
+
 
 ### Flexible Multi-Robot Support
 - **Description:** Supports various robotic configurations and tasks, allowing for easy adaptation to different setups beyond pick-and-place.
@@ -25,10 +33,6 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 ### Easy Integration
 - **Description:** Designed to be compatible with existing robotics frameworks and software, facilitating smooth integration into your projects.
 - **Example Use Case:** Seamlessly integrates with ROS (Robot Operating System) and other robotics middleware.
-
-### Customizable Parameters
-- **Description:** Allows for customization of key parameters to fine-tune the motion planning according to specific requirements.
-- **Example Use Case:** Adjust parameters to optimize performance for different types of tasks or operational environments.
 
 ![Feature Demo](https://example.com/feature-demo.gif)
 
