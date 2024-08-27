@@ -2,7 +2,11 @@
 
 <!--  -->
 ## Introduction
-This repository is developed as part of a final dissertation to obtain the Master of Science in Electromechanical Engineering with a specialization in Mechatronics and Robotics. The project focuses on sampling-based motion planning of manipulators, particularly combining Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM).
+This repository is part of a final dissertation project for a Master of Science in Electromechanical Engineering, specializing in Mechatronics and Robotics. The project centers on advanced motion planning techniques for robotic manipulators, specifically integrating Conflict-Based Search (CBS) with Probabilistic RoadMaps (PRM).
+
+The primary objective of this research is to develop a novel motion planning algorithm that merges the strengths of coupled and decoupled approaches. This hybrid method aims to achieve efficient, collision-free motion planning for multiple manipulators operating in close proximity, particularly in scenarios involving pick-and-place tasks. To facilitate its development, this versatile multi-robot motion planning library has been created.
+
+While the focus is on manipulators performing pick-and-place operations, the framework is designed to be adaptable for various robotic applications and scenarios. Additionally, this project provides a foundation for benchmarking the new hybrid approach against traditional coupled and decoupled methods, offering valuable insights into its performance and advantages.
 
 <!--  -->
 ## Features
