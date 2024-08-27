@@ -41,10 +41,10 @@ This repository is developed as part of a final dissertation to obtain the Maste
 <!-- 2. **Examples**:
     - Describe any example usage or command-line arguments. -->
 
-<!-- ## Features
+## Features
 - Conflict-Based Search (CBS) for multi-manipulator planning.
 - Probabilistic RoadMaps (PRM) integration.
-- Efficient path planning for multiple robotic arms. -->
+- Efficient path planning for multiple robotic arms.
 
 <!-- ## Configuration
 - Explain any configuration options available in the project.
