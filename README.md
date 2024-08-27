@@ -1,4 +1,7 @@
 # MMMP (Multi-Manipulator Motion Planning)
+
+<!--  -->
+## Introduction
 This repository is developed as part of a final dissertation to obtain the Master of Science in Electromechanical Engineering with a specialization in Mechatronics and Robotics. The project focuses on sampling-based motion planning of manipulators, particularly combining Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM).
 
 <!--  -->
@@ -136,4 +139,10 @@ This project is licensed under the MIT License.
 
 <!--  -->
 ## Acknowledgements
-- Acknowledge any contributors, libraries, or resources that were helpful.
+- [OMPL Library](https://ompl.kavrakilab.org/) - For providing an excellent base for sampling-based motion planning algorithms.
+- [Robotics Toolbox for Python](https://petercorke.com/toolboxes/robotics-toolbox/) - For various robot models and simulation utilities.
+- Special thanks to my promotor, Prof. dr. ir. Bram Vanderborght, and my supervisors, dr. ir. Gaoyuan Liu and Prof. dr. ir. Ilias El Makrini, for their guidance and support throughout the project.
+
+![GitHub last commit](https://img.shields.io/github/last-commit/ViktorLaurens/MMMP)
+![GitHub issues](https://img.shields.io/github/issues/ViktorLaurens/MMMP)
+![GitHub license](https://img.shields.io/github/license/ViktorLaurens/MMMP)
