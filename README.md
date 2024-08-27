@@ -58,7 +58,7 @@ This repository is developed as part of a final dissertation to obtain the Maste
     └── requirements.txt
 
 ### docs/ 
-Contains the research paper explaining the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved. See [Documentation](#documentation) section. 
+Contains the research paper explaining the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved. See [Documentation](#documentation). 
 
 ### experiments/
 Contains configuration files for various parts of your project. 
