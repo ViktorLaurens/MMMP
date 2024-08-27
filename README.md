@@ -93,7 +93,7 @@ Contains tools and utilities.
 ## Documentation
 For a comprehensive understanding of the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved, you can access the research paper from the docs directory. You can also download the paper directly using the link below.
 
-[Download the Research Paper (PDF)](docs/research_paper.pdf)
+[Download the Research Paper (PDF)](docs/MMMP_research_paper.pdf)
 
 
 <!--  -->
