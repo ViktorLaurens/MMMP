@@ -43,9 +43,6 @@ This repository is developed as part of a final dissertation to obtain the Maste
 - Probabilistic RoadMaps (PRM) integration.
 - Efficient path planning for multiple robotic arms. -->
 
-<!-- ## Configuration
-- Explain any configuration options available in the project.
-- Example configuration files or settings. -->
 
 ## Project Structure
     MMMP/
