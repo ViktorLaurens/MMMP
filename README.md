@@ -60,7 +60,7 @@ This repository is developed as part of a final dissertation to obtain the Maste
     ├── main.py
     └── requirements.txt
 
-<!-- ### config/
+### config/
 Contains configuration files for various parts of your project. 
 
 ### docs/
@@ -88,7 +88,7 @@ Contains simulation scripts.
 Contains test scripts.
 
 ### utils/
-Contains tools and utilities. -->
+Contains tools and utilities.
 
 ## Contributing
 We welcome contributions to improve this project. Follow these steps to contribute:
