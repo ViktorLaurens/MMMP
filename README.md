@@ -31,19 +31,12 @@ This repository is developed as part of a final dissertation to obtain the Maste
     pip install -r requirements.txt
     ```
 
+<!--  -->
 ## Usage
 1. **Run the main script**:
     ```bash
     python -m main
     ```
-
-<!-- 2. **Examples**:
-    - Describe any example usage or command-line arguments. -->
-
-<!-- ## Features
-- Conflict-Based Search (CBS) for multi-manipulator planning.
-- Probabilistic RoadMaps (PRM) integration.
-- Efficient path planning for multiple robotic arms. -->
 
 <!--  -->
 ## Project Structure Overview
