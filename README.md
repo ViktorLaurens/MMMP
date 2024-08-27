@@ -5,6 +5,9 @@
 This repository is developed as part of a final dissertation to obtain the Master of Science in Electromechanical Engineering with a specialization in Mechatronics and Robotics. The project focuses on sampling-based motion planning of manipulators, particularly combining Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM).
 
 <!--  -->
+## Features
+
+<!--  -->
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
@@ -32,13 +35,6 @@ This repository is developed as part of a final dissertation to obtain the Maste
 4. **Install dependencies**:
     ```bash
     pip install -r requirements.txt
-    ```
-
-<!--  -->
-## Usage
-1. **Run the main script**:
-    ```bash
-    python -m main
     ```
 
 <!--  -->
@@ -81,6 +77,20 @@ Contains test scripts.
 
 ### utils/
 Contains tools and utilities.
+
+
+<!--  -->
+## Usage & examples
+1. **Run the main script**:
+    ```bash
+    python -m main
+    ```
+
+
+<!--  -->
+## Documentation
+
+
 
 <!--  -->
 ## Contributing
