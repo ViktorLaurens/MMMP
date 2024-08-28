@@ -10,9 +10,9 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 
 <!--  -->
 ## Features
-### Hybrid motion planning algorithm
+### Hybrid motion planning algorithm: CBS-PRM
 - **Description:** Combines Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM) for collision-free pathfinding for multiple manipulators.
-- **Example Use Case:** Ideal for scenarios where multiple manipulators are performing pick-and-place tasks in a confined space.
+<!-- - **Example Use Case:** Ideal for scenarios where multiple manipulators are performing tasks in close proximity. -->
 
 <div align="center">
   <img width = "50%" src="res\gifs\CBSPRM_20240828_123606.gif"/> 
