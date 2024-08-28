@@ -30,18 +30,12 @@ This collection of planners can be found in the [`planners`](planners) directory
   - **RRT** (coupled)
   - **Prioritized-RRT** (decoupled)
 
-### Benchmarking and Comparison Tools
+### Benchmarking and comparison Tools
 This repository includes a suite of tools designed to benchmark and compare the hybrid motion planning approach (CBS-PRM) against traditional methods. These tools help evaluate various aspects such as performance, efficiency, and overall effectiveness. Key features include:
-
-- **Performance Metrics:** Quantitative measurements to assess the effectiveness of different motion planning algorithms, including execution time, path length, and collision rates.
-
-- **Comparative Analysis:** Tools to perform side-by-side comparisons between the hybrid CBS-PRM approach and traditional coupled or decoupled methods, providing insights into strengths and weaknesses.
-
-- **Visualization Tools:** Graphical representations and animations to illustrate the results of benchmark tests and facilitate a better understanding of the comparative performance.
-
-- **Scenario Testing:** Predefined and customizable test scenarios to evaluate how different planners handle various complex situations, such as dense environments or high-speed tasks.
-
-These tools offer valuable insights for optimizing motion planning strategies and advancing research in multi-robot systems.
+- **Performance metrics:** Quantitative measurements to assess the effectiveness of different motion planning algorithms, including execution time, path length, and collision rates.
+- **Comparative analysis:** Tools to perform side-by-side comparisons between the hybrid CBS-PRM approach and traditional coupled or decoupled methods, providing insights into strengths and weaknesses.
+- **Visualization tools:** Graphical representations and animations to illustrate the results of benchmark tests and facilitate a better understanding of the comparative performance.
+- **Scenario testing:** Predefined and customizable test scenarios to evaluate how different planners handle various complex situations, such as dense environments or high-speed tasks.
 
 ### Trajectory generation
 The path planner computes a collision-free path in joint space consisting of the sequence of linear edges connecting waypoints. To ensure the path is collision-free, the planner assumes the robots move at a constant speed of equal magnitude along their paths. However, these zig-zag motions are impractical for real-world execution. 
