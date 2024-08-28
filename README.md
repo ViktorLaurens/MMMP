@@ -11,37 +11,45 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 <!--  -->
 ## Features
 ### Hybrid motion planning algorithm: CBS-PRM
-- **Description:** Combines Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM) for collision-free pathfinding for multiple manipulators.
+The CBS-PRM algorithm combines Conflict-Based Search (CBS) with Probabilistic RoadMaps (PRM) to provide efficient, collision-free pathfinding for multiple manipulators.
 
 <div align="center">
-  <img width = "60%" src="res\gifs\CBSPRM_20240828_123606.gif"/> 
+  <img width="60%" src="res/gifs/CBSPRM_20240828_123606.gif" alt="CBS-PRM Algorithm Visualization"/> 
 </div>
 
 ### Python library of multi-robot motion planners
-- **Description:** This collection of planners can be found in the [planners](planners) directory. At the moment this collection includes both coupled and decoupled sampling-based path planners of both graph-based (PRM) and tree-based (RRT) types: 
--- Distance-PRM (coupled, graph-based)
--- Degree-PRM (coupled, graph-based)
--- Prioritized-PRM (decoupled, graph-based)
--- CBS-PRM (hybrid, graph-based)
--- RRT (coupled, tree-based)
--- Prioritized-RRT (decoupled, tree-based)
+This collection of planners can be found in the [`planners`](planners) directory. Currently, it includes a range of sampling-based path planners, categorized as follows:
+
+- **Graph-Based Planners:**
+  - **Distance-PRM** (coupled)
+  - **Degree-PRM** (coupled)
+  - **Prioritized-PRM** (decoupled)
+  - **CBS-PRM** (hybrid)
+
+- **Tree-Based Planners:**
+  - **RRT** (coupled)
+  - **Prioritized-RRT** (decoupled)
+
+### Benchmarking and Comparison Tools
+This repository includes a suite of tools designed to benchmark and compare the hybrid motion planning approach (CBS-PRM) against traditional methods. These tools help evaluate various aspects such as performance, efficiency, and overall effectiveness. Key features include:
+
+- **Performance Metrics:** Quantitative measurements to assess the effectiveness of different motion planning algorithms, including execution time, path length, and collision rates.
+
+- **Comparative Analysis:** Tools to perform side-by-side comparisons between the hybrid CBS-PRM approach and traditional coupled or decoupled methods, providing insights into strengths and weaknesses.
+
+- **Visualization Tools:** Graphical representations and animations to illustrate the results of benchmark tests and facilitate a better understanding of the comparative performance.
+
+- **Scenario Testing:** Predefined and customizable test scenarios to evaluate how different planners handle various complex situations, such as dense environments or high-speed tasks.
+
+These tools offer valuable insights for optimizing motion planning strategies and advancing research in multi-robot systems.
 
 ### Trajectory generation
-- **Description:** The path planner computes a collision-free path in joint space consisting of the sequence of linear edges connecting waypoints. To ensure the path is collision-free, the planner assumes the robots move at a constant speed of equal magnitude along their paths. However, these zig-zag motions are impractical for real-world execution. Therefore, a trajectory is generated that respects the kinematic and dynamic constraints of the robots while closely following the original zig-zag paths. The computed trajectory uses Linear Segments with Parabolic Blends (LSPBs) to smoothly transition between waypoints, ensuring that the motion remains collision-free.
+The path planner computes a collision-free path in joint space consisting of the sequence of linear edges connecting waypoints. To ensure the path is collision-free, the planner assumes the robots move at a constant speed of equal magnitude along their paths. However, these zig-zag motions are impractical for real-world execution. Therefore, a trajectory is generated that respects the kinematic and dynamic constraints of the robots while closely following the original zig-zag paths. The computed trajectory uses Linear Segments with Parabolic Blends (LSPBs) to smoothly transition between waypoints, ensuring that the motion remains collision-free.
 
 <div align="center">
   <img width = "60%" src="res/images/PathBeforeTrajectory.png"/> 
   <img width = "60%" src="res/images/PathAndTrajectory.png"/> 
 </div>
-
-### Benchmarking and Comparison Tools
-- **Description:** Includes tools for benchmarking the hybrid approach against traditional methods to evaluate performance and efficiency.
-
-### Easy Adaptation, extension and integration
-- **Description:** Thanks to the modular structure of this project and the abstraction of planners, robots, environments, and tasks, it is easy to: 
--- adapt the programs to use other robots, performing other tasks
--- extend the application of the robpts to other environments
--- integrate other path planners
 
 ### Easy Adaptation, Extension, and Integration
 The modular structure of this project, along with the abstraction of planners, robots, environments, and tasks, offers the following benefits:
