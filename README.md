@@ -12,14 +12,19 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 ## Features
 ### Hybrid motion planning algorithm: CBS-PRM
 - **Description:** Combines Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM) for collision-free pathfinding for multiple manipulators.
-<!-- - **Example Use Case:** Ideal for scenarios where multiple manipulators are performing tasks in close proximity. -->
 
 <div align="center">
   <img width = "60%" src="res\gifs\CBSPRM_20240828_123606.gif"/> 
 </div>
 
 ### Python library of multi-robot motion planners
-- **Description:** This collection of planners can be found in the [planners](planners) directory. At the moment this collection includes both coupled and decoupled sampling-based path planners of both graph-based (PRM) and tree-based (RRT) types. 
+- **Description:** This collection of planners can be found in the [planners](planners) directory. At the moment this collection includes both coupled and decoupled sampling-based path planners of both graph-based (PRM) and tree-based (RRT) types: 
+-- Distance-PRM (coupled, graph-based)
+-- Degree-PRM (coupled, graph-based)
+-- Prioritized-PRM (decoupled, graph-based)
+-- CBS-PRM (hybrid, graph-based)
+-- RRT (coupled, tree-based)
+-- Prioritized-RRT (decoupled, tree-based)
 
 ### Trajectory generation
 - **Description:** The path planner computes a collision-free path in joint space consisting of the sequence of linear edges connecting waypoints. To ensure the path is collision-free, the planner assumes the robots move at a constant speed of equal magnitude along their paths. However, these zig-zag motions are impractical for real-world execution. Therefore, a trajectory is generated that respects the kinematic and dynamic constraints of the robots while closely following the original zig-zag paths. The computed trajectory uses Linear Segments with Parabolic Blends (LSPBs) to smoothly transition between waypoints, ensuring that the motion remains collision-free.
@@ -29,19 +34,20 @@ While the focus is on manipulators performing pick-and-place operations, the fra
   <img width = "60%" src="res/images/PathAndTrajectory.png"/> 
 </div>
 
-### Flexible Multi-Robot Support
-- **Description:** Supports various robotic configurations and tasks, allowing for easy adaptation to different setups beyond pick-and-place.
-- **Example Use Case:** Can be extended to applications such as collaborative assembly or complex warehouse automation.
-
 ### Benchmarking and Comparison Tools
 - **Description:** Includes tools for benchmarking the hybrid approach against traditional methods to evaluate performance and efficiency.
-- **Example Use Case:** Useful for researchers and practitioners who want to compare different motion planning strategies.
 
-### Easy Integration
-- **Description:** Designed to be compatible with existing robotics frameworks and software, facilitating smooth integration into your projects.
-- **Example Use Case:** Seamlessly integrates with ROS (Robot Operating System) and other robotics middleware.
+### Easy Adaptation, extension and integration
+- **Description:** Thanks to the modular structure of this project and the abstraction of planners, robots, environments, and tasks, it is easy to: 
+-- adapt the programs to use other robots, performing other tasks
+-- extend the application of the robpts to other environments
+-- integrate other path planners
 
-![Feature Demo](https://example.com/feature-demo.gif)
+### Easy Adaptation, Extension, and Integration
+The modular structure of this project, along with the abstraction of planners, robots, environments, and tasks, offers the following benefits:
+  - **Adaptability:** Easily adapt the programs to utilize different robots for various tasks.
+  - **Extendability:** Easily extend the application of robots to operate in diverse environments.
+  - **Integrability:** Easily integrate additional path planners.
 
 
 <!--  -->
