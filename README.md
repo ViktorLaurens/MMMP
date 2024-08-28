@@ -109,10 +109,10 @@ The modular structure of this project, along with the abstraction of planners, r
     └── requirements.txt
 
 ### docs/ 
-Contains the research paper explaining the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved. See [`Documentation`](#documentation). 
+Contains the research paper explaining the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved. See [´Documentation´](#documentation). 
 
 ### experiments/
-Contains files for benchmarking and comparing the hybrid motion planning approach (CBS-PRM) against traditional methods. See [`Features: Benchmarking and comparison tools`](#benchmarking-and-comparison-tools). 
+Contains files for benchmarking and comparing the hybrid motion planning approach (CBS-PRM) against traditional methods. See [Features: Benchmarking and comparison tools](#benchmarking-and-comparison-tools). 
 
 ### models/
 Contains geometric models for robot classes.
