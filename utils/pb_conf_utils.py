@@ -104,6 +104,24 @@ def set_camera_pose(camera_point, target_point=np.zeros(3)):
     p.resetDebugVisualizerCamera(distance, math.degrees(yaw), math.degrees(pitch),
                                  target_point, physicsClientId=CLIENT)
     
+def get_view_matrix(camera_point, target_point=np.zeros(3)):
+    """
+    Compute the view matrix from specification of camera position and target point.
+
+    Args:
+    - camera_point (array-like): Coordinates [x, y, z] of the camera.
+    - target_point (array-like, optional): Coordinates [x, y, z] of the target the camera looks at. Defaults to origin [0, 0, 0].
+    - client_id (int, optional): The PyBullet client ID. Defaults to 0. Unused in this function, added for API consistency.
+
+    Returns:
+    - view_matrix (list): The computed view matrix for the camera.
+    """
+    # Compute the view matrix using PyBullet's function
+    view_matrix = p.computeViewMatrix(cameraEyePosition=camera_point,
+                                      cameraTargetPosition=target_point,
+                                      cameraUpVector=[0, 0, 1])  # Assuming Z-up coordinate system
+    return view_matrix
+
 def get_pitch(point):
     dx, dy, dz = point
     return np.math.atan2(dz, np.sqrt(dx ** 2 + dy ** 2))
