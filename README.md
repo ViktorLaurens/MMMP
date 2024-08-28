@@ -15,7 +15,7 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 - **Example Use Case:** Ideal for scenarios where multiple manipulators are performing pick-and-place tasks in a confined space.
 
 <div align="center">
-  <img width = "50%" src="res/gifs/CBSPRM_20240828_121204.gif" alt="CBS-PRM demo"/>
+  <img width = "50%" src="res\gifs\CBSPRM_20240828_123606.gif"/> 
 </div>
 
 ### Coupled & decoupled sampling-based planners
