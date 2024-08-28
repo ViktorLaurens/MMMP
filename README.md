@@ -115,7 +115,11 @@ Contains the research paper explaining the rationale behind the creation of this
 Contains files for benchmarking and comparing the hybrid motion planning approach (CBS-PRM) against traditional methods. See [Features: Benchmarking and comparison tools](#benchmarking-and-comparison-tools). 
 
 ### models/
-Contains geometric models for robot classes.
+The [`models`](models) directory contains URDF (Unified Robot Description Format) files that are essential for various aspects of robot simulation and interaction in a Pybullet environment. These files are used for:
+- **Visualization:** The URDF files provide detailed descriptions of robot and object models, which are used to render accurate visual representations in the simulation. This helps in visualizing the robots and objects in a realistic manner.
+- **Collision Checking:** The URDF files define the geometries and collision properties of robots and objects, enabling the simulation to perform collision detection and ensure that robots navigate through the environment without intersecting with obstacles.
+- **Physics Simulation:** The URDF files include information about the physical properties of robots and objects, such as mass, inertia, and joint dynamics. This data is crucial for realistic physics simulations, allowing the simulation to model the behavior and interactions of robots and objects under various forces and constraints.
+
 
 ### planners/
 Contains path and motion planning algorithms.
