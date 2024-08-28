@@ -1,6 +1,7 @@
 import os
 from PIL import Image
 import cairo
+import cairosvg
 
 def eps2pdf(eps_path, pdf_path):
     # Convert EPS to PDF using PIL
@@ -24,6 +25,11 @@ def pdf2svg(pdf_path, svg_path):
     svg_context.paint()
     svg_surface.finish()
 
+def eps2svg(eps_path, svg_path):
+    """Convert EPS to SVG using CairoSVG."""
+    # Convert EPS to SVG
+    cairosvg.eps2svg(url=eps_path, write_to=svg_path)
+
 # EPS to PDF
 def convert_eps_to_pdf():
     directory = os.path.dirname(__file__)
@@ -44,7 +50,18 @@ def convert_pdf_to_svg():
     pdf2svg(pdf_path, svg_path)
     print(f"Converted {pdf_path} to {svg_path}")
 
+# EPS to SVG
+def convert_eps_to_svg():
+    directory = os.path.dirname(__file__)
+    eps_filename = 'PathAndTrajectory.eps'
+    svg_filename = eps_filename.replace('.eps', '.svg')
+    eps_path = os.path.join(directory, eps_filename)
+    svg_path = os.path.join(directory, svg_filename)
+    eps2svg(eps_path, svg_path)
+    print(f"Converted {eps_path} to {svg_path}")
+
 if __name__ == "__main__":
     # convert_eps_to_pdf()
-    convert_pdf_to_svg()
+    # convert_pdf_to_svg()
+    convert_eps_to_svg()
 
