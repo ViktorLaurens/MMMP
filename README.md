@@ -31,10 +31,14 @@ This collection of planners can be found in the [`planners`](planners) directory
   - **Prioritized-RRT** (decoupled)
 
 ### Benchmarking and comparison Tools
-This repository includes a suite of tools designed to benchmark and compare the hybrid motion planning approach (CBS-PRM) against traditional methods. These tools can be found in the ['experiments'](experiments) directory. Key features include:
+This repository provides a suite of tools for benchmarking and comparing the hybrid motion planning approach (CBS-PRM) against traditional methods. These tools are located in the [`experiments`](experiments) directory. Key features include:
 - **Scenario testing:** In the ... file, different scenarios are tested in which the scalability performance is observed by noting and comparing different performance metrics.
-- **Performance metrics:** The performance metrics are quantities which indicate various aspects of the performance and efficiency of different path planning algorithms. These metrics include execution time, path length, memory usage, and success rates.
-- **Visualization tools:** File sare included to plot the performance metrics of different algorithms to be able to compare and illustrate the results of benchmark tests and facilitate a better understanding of the comparative performance.
+- **Performance Metrics:** Performance metrics provide insights into the efficiency and performance of different path planning algorithms. These metrics include:
+  - Execution Time
+  - Memory Usage
+  - Path Length
+  - Success Rates
+- **Visualization Tools:** Several files are available for plotting and visualizing the performance metrics of different algorithms. These tools help compare and illustrate benchmark results, enhancing the understanding of comparative performance.
 
 
 ### Trajectory generation
