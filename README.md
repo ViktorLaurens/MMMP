@@ -34,10 +34,10 @@ This collection of planners can be found in the [`planners`](planners) directory
 This repository provides a suite of tools for benchmarking and comparing the hybrid motion planning approach (CBS-PRM) against traditional methods. These tools are located in the [`experiments`](experiments) directory. Key features include:
 - **Scenario testing:** In the ... file, different scenarios are tested in which the scalability performance is observed by noting and comparing different performance metrics.
 - **Performance Metrics:** Performance metrics provide insights into the efficiency and performance of different path planning algorithms. These metrics include:
-  - Execution Time
-  - Memory Usage
-  - Path Length
-  - Success Rates
+  - Execution time
+  - Memory usage
+  - Path lengths
+  - Success rates
 - **Visualization Tools:** Several files are available for plotting and visualizing the performance metrics of different algorithms. These tools help compare and illustrate benchmark results, enhancing the understanding of comparative performance.
 
 
@@ -109,7 +109,7 @@ The modular structure of this project, along with the abstraction of planners, r
     └── requirements.txt
 
 ### docs/ 
-Contains the research paper explaining the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved. See [Documentation](#documentation). 
+Contains the research paper explaining the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved. See [`Documentation`](#documentation). 
 
 ### experiments/
 Contains configuration files for various parts of your project. 
@@ -148,7 +148,7 @@ Contains tools and utilities.
 ## Documentation
 For a comprehensive understanding of the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved, you can access the research paper from the docs directory and download the paper from there. Use the link below to be redirected to the file and download it.
 
-[Download the Research Paper (PDF)](docs/MMMP_research_paper.pdf)
+[`Download the Research Paper (PDF)`](docs/MMMP_research_paper.pdf)
 
 
 <!--  -->
