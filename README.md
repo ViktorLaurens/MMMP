@@ -32,7 +32,7 @@ This collection of planners can be found in the [`planners`](planners) directory
 
 ### Benchmarking and comparison Tools
 This repository provides a suite of tools for benchmarking and comparing the hybrid motion planning approach (CBS-PRM) against traditional methods. These tools are located in the [`experiments`](experiments) directory. Key features include:
-- **Scenario testing:** In the [`experiments/pybullet/exp_scalability.py`] file, different scenarios are tested in which the scalability performance is observed by tracking different performance metrics.
+- **Scenario testing:** In the [`exp_scalability`](experiments/pybullet/exp_scalability.py) file, different scenarios are tested in which the scalability performance is observed by tracking different performance metrics.
 - **Performance Metrics:** Performance metrics provide insights into the efficiency and performance of different path planning algorithms. These metrics include:
   - Execution time
   - Memory usage
