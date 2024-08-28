@@ -15,7 +15,7 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 <!-- - **Example Use Case:** Ideal for scenarios where multiple manipulators are performing tasks in close proximity. -->
 
 <div align="center">
-  <img width = "50%" src="res\gifs\CBSPRM_20240828_123606.gif"/> 
+  <img width = "75%" src="res\gifs\CBSPRM_20240828_123606.gif"/> 
 </div>
 
 ### Python library of multi-robot motion planners
@@ -25,8 +25,8 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 - **Description:** The path planner computes a collision-free path in joint space consisting of the sequence of linear edges connecting waypoints. To ensure the path is collision-free, the planner assumes the robots move at a constant speed of equal magnitude along their paths. However, these zig-zag motions are impractical for real-world execution. Therefore, a trajectory is generated that respects the kinematic and dynamic constraints of the robots while closely following the original zig-zag paths. The computed trajectory uses Linear Segments with Parabolic Blends (LSPBs) to smoothly transition between waypoints, ensuring that the motion remains collision-free.
 
 <div align="center">
-  <img width = "50%" src="res/images/PathBeforeTrajectory.png"/> 
-  <img width = "50%" src="res/images/PathAndTrajectory.png"/> 
+  <img width = "75%" src="res/images/PathBeforeTrajectory.png"/> 
+  <img width = "75%" src="res/images/PathAndTrajectory.png"/> 
 </div>
 
 ### Flexible Multi-Robot Support
