@@ -14,7 +14,7 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 - **Description:** Combines Conflict-Based Search (CBS) and Probabilistic RoadMaps (PRM) for collision-free pathfinding for multiple manipulators.
 - **Example Use Case:** Ideal for scenarios where multiple manipulators are performing pick-and-place tasks in a confined space.
 
-![Feature Demo](res/gifs/CBSPRM.gif)
+![CBSPRM demo](res/gifs/CBSPRM_20240828_121204.gif)
 
 ### Coupled & decoupled sampling-based planners
 
