@@ -152,28 +152,35 @@ def main():
     pause_sim('Disconnect?')
     disconnect()
 
-    if frames is not None: 
-        flag = input('Save video? (y/N): ')
-        if flag.lower() == 'y':
+    if frames is not None:
+        if input('Save video? (y/N): ').lower() == 'y':
             # Define where to save the video
             now = time.strftime("%Y%m%d_%H%M%S")
             directory = os.path.join(os.path.dirname(__file__), '..', 'res', 'videos')
-            filename = f'\CBSPRM_{len(agents)}pandas_{now}.mp4'
+            # os.makedirs(directory, exist_ok=True)  # Ensure the directory exists
+            filename = f'CBSPRM_{now}.mp4'
 
             # Save the captured frames as a video
-            imageio.mimsave(directory + filename, frames, fps=30)  # Define the FPS as needed
-            print(f"Video saved as {directory + filename}")
-        else: 
+            imageio.mimsave(os.path.join(directory, filename), frames, fps=30)  # Define the FPS as needed
+            print(f"Video saved as {os.path.join(directory, filename)}")
+        else:
             print("Video not saved.")
-        
+
         if input('Save GIF? (y/N): ').lower() == 'y':
             # Define where to save the GIF
             now = time.strftime("%Y%m%d_%H%M%S")
             directory = os.path.join(os.path.dirname(__file__), '..', 'res', 'gifs')
-            filename = f'\CBSPRM_{len(agents)}pandas_{now}.gif'
+            # os.makedirs(directory, exist_ok=True)  # Ensure the directory exists
+            filename = f'CBSPRM_{now}.gif'
+
+            # Ensure frames are in a correct format
+            frames = [np.uint8(frame) for frame in frames]  # Convert each frame to uint8 if necessary
 
             # Save the captured frames as a GIF
-            imageio.mimsave(directory + filename, frames, fps=30)
+            imageio.mimsave(os.path.join(directory, filename), frames, duration=1/60)  # Define the duration or fps as needed
+            print(f"GIF saved as {os.path.join(directory, filename)}")
+        else:
+            print("GIF not saved.")
 
 if __name__ == "__main__":
     main()
