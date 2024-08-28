@@ -30,7 +30,7 @@ This collection of planners can be found in the [`planners`](planners) directory
   - **RRT** (coupled)
   - **Prioritized-RRT** (decoupled)
 
-### Benchmarking and comparison Tools
+### Benchmarking and comparison tools
 This repository provides a suite of tools for benchmarking and comparing the hybrid motion planning approach (CBS-PRM) against traditional methods. These tools are located in the [`experiments`](experiments) directory. Key features include:
 - **Scenario testing:** In the [`exp_scalability`](experiments/pybullet/exp_scalability.py) file, different scenarios are tested in which the scalability performance is observed by tracking different performance metrics.
 - **Performance Metrics:** Performance metrics provide insights into the efficiency and performance of different path planning algorithms. These metrics include:
@@ -112,7 +112,7 @@ The modular structure of this project, along with the abstraction of planners, r
 Contains the research paper explaining the rationale behind the creation of this multi-robot motion planning library and the underlying algorithms and methodologies involved. See [`Documentation`](#documentation). 
 
 ### experiments/
-Contains configuration files for various parts of your project. 
+Contains files for benchmarking and comparing the hybrid motion planning approach (CBS-PRM) against traditional methods. See [`Features: Benchmarking and comparison tools`](#benchmarking-and-comparison-tools). 
 
 ### models/
 Contains geometric models for robot classes.
