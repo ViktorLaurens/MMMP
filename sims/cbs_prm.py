@@ -176,7 +176,7 @@ def main():
             filename = f'CBSPRM_{now}.gif'
 
             # Save the captured frames as a GIF
-            imageio.mimsave(os.path.join(directory, filename), frames, fps=30)  # Define the duration or fps as needed
+            imageio.mimsave(os.path.join(directory, filename), frames, duration=33)  # Define the duration or fps as needed
             print(f"GIF saved as {os.path.join(directory, filename)}")
         else:
             print("GIF not saved.")
