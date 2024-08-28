@@ -73,10 +73,10 @@ While the focus is on manipulators performing pick-and-place operations, the fra
 ## Project Structure Overview
     MMMP/
     ├── docs/                   # Research paper for this project.
-    ├── experiments/            # various examples to demonstrate the project's capabilities.
-    ├── models/                 # Geometric models for robot classes. 
+    ├── experiments/            # Experiments to demonstrate the project's capabilities.
+    ├── models/                 # URDF files for robot classes. 
     ├── planners/               # Path and motion planning algorithms. 
-    ├── res/                    # Resources such as data files, images, and videos.
+    ├── res/                    # Resources such as data files, GIFs, images, plots, and videos.
     ├── robots/                 # Robot Python classes. 
     ├── sims/                   # Simulation scripts. 
     ├── tests/                  # Test scripts. 
