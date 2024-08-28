@@ -132,18 +132,18 @@ The [`res`](res) directory is dedicated to storing various resources that suppor
 - **Videos:** Media files that provide demonstrations and simulations.
 
 ### robots/
-The [`robots`](robots) directory holds Python classes that define and manage different robot models used in the project. This includes:
-- the Franka Emika Panda manipulator
-- a simple planar arm of undefined number of links and undefined length
+The [`robots`](robots) directory contains Python classes for defining and managing various robot models in Pybullet simulations. This includes: 
+- **Franka Emika Panda Manipulator:** A detailed class for the Franka Emika Panda robot, which is a versatile robotic manipulator, widely-used for research purposes.
+- **Planar Arm:** A class for a simple planar arm with configurable link counts and lengths, designed for basic simulations in 2D.
 
 ### sims/
-The [`sims`](sims) directory contains scripts for running simulations to demonstrate what this repository offers.
+The [`sims`](sims) directory includes scripts for running simulations that showcase the capabilities and functionalities of this repository.
 
 ### tests/
-The [`tests`](tests) directory includes scripts for testing the functionality and performance of different parts of the codebase. The purpose of the files in this directory is merely to test different parts of code during creation of the repository to ensure proper functionality. 
+The [`tests`](tests) directory features scripts for validating the functionality and performance of various components within the codebase. These tests ensure that different parts of the system work correctly and efficiently, helping to identify and resolve issues during development. They are not meant to be used anymore after development. 
 
 ### utils/
-The [`utils`](utils) directory contains a collection of tools and utilities that support the main functionalities of the project.
+The [`utils`](utils) directory houses a range of tools and utilities that support the core functionalities of the project. This includes functions that facilitate various tasks ranging from inverse kinematics calculations and trajectory computation to tools for setting up and managing Pybullet simulations.
 
 
 <!--  -->
