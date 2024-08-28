@@ -3,6 +3,8 @@ import imageio
 import numpy as np
 import pybullet as p
 
+from utils.pb_data_utils import save_gif, save_video
+
 # Define the path to your project root directory
 project_root = 'C:\\Users\\vikto\\MMMP'
 
@@ -153,31 +155,19 @@ def main():
     disconnect()
 
     if frames is not None:
-        # Ensure frames are in a correct format
-        frames = [np.uint8(frame) for frame in frames]  # Convert each frame to uint8 if necessary
         if input('Save video? (y/N): ').lower() == 'y':
-            # Define where to save the video
             now = time.strftime("%Y%m%d_%H%M%S")
             directory = os.path.join(os.path.dirname(__file__), '..', 'res', 'videos')
-            # os.makedirs(directory, exist_ok=True)  # Ensure the directory exists
             filename = f'CBSPRM_{now}.mp4'
-
-            # Save the captured frames as a video
-            imageio.mimsave(os.path.join(directory, filename), frames, fps=30)  # Define the FPS as needed
-            print(f"Video saved as {os.path.join(directory, filename)}")
+            save_video(frames, directory, filename, fps=30)
         else:
             print("Video not saved.")
 
         if input('Save GIF? (y/N): ').lower() == 'y':
-            # Define where to save the GIF
             now = time.strftime("%Y%m%d_%H%M%S")
             directory = os.path.join(os.path.dirname(__file__), '..', 'res', 'gifs')
-            # os.makedirs(directory, exist_ok=True)  # Ensure the directory exists
             filename = f'CBSPRM_{now}.gif'
-
-            # Save the captured frames as a GIF
-            imageio.mimsave(os.path.join(directory, filename), frames, duration=33, loop=0)  # Define the duration or fps as needed
-            print(f"GIF saved as {os.path.join(directory, filename)}")
+            save_gif(frames, directory, filename, duration=33)
         else:
             print("GIF not saved.")
 
