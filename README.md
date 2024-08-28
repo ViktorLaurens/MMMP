@@ -120,24 +120,30 @@ The [`models`](models) directory contains URDF (Unified Robot Description Format
 - **Collision Checking:** The URDF files define the geometries and collision properties of robots and objects, enabling the simulation to perform collision detection and ensure that robots navigate through the environment without intersecting with obstacles.
 - **Physics Simulation:** The URDF files include information about the physical properties of robots and objects, such as mass, inertia, and joint dynamics. This data is crucial for realistic physics simulations, allowing the simulation to model the behavior and interactions of robots and objects under various forces and constraints.
 
-
 ### planners/
-Contains path and motion planning algorithms.
+The [`planners`](planners) directory contains implementations of various path planning algorithms used to determine collision-free paths for multiple robots. In this context, collision-free means free from collisions with other robots, static obstacles in the workspace and of course free from collisions between different links of the same robot. See [Features](#features).
 
 ### res/
-Contains resources such as data files, images, and videos.
+The [`res`](res) directory is dedicated to storing various resources that support the functionality of the project. This includes:
+- **Data:** Important files containing data of metrics for comparing the performance of different algorithms gathered from scalability experiments.
+- **GIFs:** Visual assets used for illustrative purposes. 
+- **Images:** Visual assets used for documentation, visualization, or analysis.
+- **Plots:** Visual assets used for visualizing data.
+- **Videos:** Media files that provide demonstrations and simulations.
 
 ### robots/
-Contains robot python classes.
+The [`robots`](robots) directory holds Python classes that define and manage different robot models used in the project. This includes:
+- the Franka Emika Panda manipulator
+- a simple planar arm of undefined number of links and undefined length
 
 ### sims/
-Contains simulation scripts.
+The [`sims`](sims) directory contains scripts for running simulations to demonstrate what this repository offers.
 
 ### tests/
-Contains test scripts.
+The [`tests`](tests) directory includes scripts for testing the functionality and performance of different parts of the codebase. The purpose of the files in this directory is merely to test different parts of code during creation of the repository to ensure proper functionality. 
 
 ### utils/
-Contains tools and utilities.
+The [`utils`](utils) directory contains a collection of tools and utilities that support the main functionalities of the project.
 
 
 <!--  -->
