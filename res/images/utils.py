@@ -8,7 +8,7 @@ def eps2pdf(eps_path, pdf_path):
 
 def main():
     directory = os.path.dirname(__file__)
-    eps_filename = 'PathBeforeTrajectory.eps'
+    eps_filename = 'PathAndTrajectory.eps'
     pdf_filename = eps_filename.replace('.eps', '.pdf')
     png_filename = eps_filename.replace('.eps', '.png')
 
