@@ -7,7 +7,7 @@ import time
 import numpy as np
 import pybullet as p
 
-from utils.pb_conf_utils import wait_for_duration
+from utils.pb_conf_utils import wait_for_duration, get_view_matrix
 from utils.traj_utils import calculate_lspb_trajectory, joint_positions_from_trajectories
 
 
@@ -117,10 +117,9 @@ class Environment:
         
         return frames  # Return the captured frames for video creation
 
-    def capture_frame(self, width=640, height=480):
+    def capture_frame(self, width=640, height=480, camera_point=[0, -1.2, 1.2], target_point=[0, 0, 0]):
         """Capture a single frame from the current PyBullet view."""
-        view_matrix = p.computeViewMatrixFromYawPitchRoll(cameraTargetPosition=[0, 0, 1], distance=5,
-                                                          yaw=30, pitch=-30, roll=0, upAxisIndex=2)
+        view_matrix = get_view_matrix(camera_point, target_point)
         proj_matrix = p.computeProjectionMatrixFOV(fov=60, aspect=float(width)/height,
                                                    nearVal=0.1, farVal=100.0)
         _, _, img_arr, _, _ = p.getCameraImage(width, height, view_matrix, proj_matrix,
