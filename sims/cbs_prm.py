@@ -153,6 +153,8 @@ def main():
     disconnect()
 
     if frames is not None:
+        # Ensure frames are in a correct format
+        frames = [np.uint8(frame) for frame in frames]  # Convert each frame to uint8 if necessary
         if input('Save video? (y/N): ').lower() == 'y':
             # Define where to save the video
             now = time.strftime("%Y%m%d_%H%M%S")
@@ -173,11 +175,8 @@ def main():
             # os.makedirs(directory, exist_ok=True)  # Ensure the directory exists
             filename = f'CBSPRM_{now}.gif'
 
-            # Ensure frames are in a correct format
-            frames = [np.uint8(frame) for frame in frames]  # Convert each frame to uint8 if necessary
-
             # Save the captured frames as a GIF
-            imageio.mimsave(os.path.join(directory, filename), frames, duration=1/60)  # Define the duration or fps as needed
+            imageio.mimsave(os.path.join(directory, filename), frames, fps=30)  # Define the duration or fps as needed
             print(f"GIF saved as {os.path.join(directory, filename)}")
         else:
             print("GIF not saved.")
